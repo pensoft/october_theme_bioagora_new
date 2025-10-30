@@ -1,0 +1,31 @@
+title = "Useful Links"
+layout = "default"
+url = "/useful-links"
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "useful-links"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+
+
+[menu tabs_menu]
+start = "id-17"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+{% component 'siteSearchInclude' %}
+
+<div class="container">
+    <div class="category-tabs">
+        {% component 'tabs_menu' %}
+    </div>
+</div>
+
+{% component 'jumbotron' %}

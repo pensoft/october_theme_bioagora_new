@@ -1,0 +1,150 @@
+title = "Deliverables"
+layout = "default"
+url = "/deliverables"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "deliverables"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+
+
+[menu tabs_menu]
+start = "id-17"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Accordions\Models\Item;
+
+function onStart(){
+    $this['accorions'] = Item::where('category_id', 1)->get();
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+<!-- Skip Links for Screen Readers -->
+
+<main id="main-content" role="main" aria-labelledby="work-packages-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="work-packages-page-title" class="sr-only">Work Packages</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <!-- Jumbotron Section -->
+    <section role="banner"
+             aria-labelledby="featured-content-heading"
+             aria-describedby="featured-content-description">
+        <h2 id="featured-content-heading" class="sr-only">Featured Content</h2>
+        <div id="featured-content-description" class="sr-only">
+            Overview and introduction to our work packages and project structure
+        </div>
+        {% component 'jumbotron' %}
+    </section>
+
+    <!-- Work Packages Accordion Section -->
+    <section id="work-packages"
+             class="container work_packages"
+             role="region"
+             aria-labelledby="work-packages-heading"
+             aria-describedby="work-packages-instructions">
+
+        <header>
+            <h2 id="work-packages-heading" class="sr-only">Work Packages Accordion</h2>
+            <div id="work-packages-instructions" class="sr-only">
+                Explore our {{ accorions|length }} work packages below. Use Enter or Space to expand or collapse each work package. Use Tab to navigate between work packages.
+            </div>
+        </header>
+
+        <div class="row work-packages-container"
+             role="list"
+             aria-label="List of {{ accorions|length }} work packages">
+
+            {% for key, item in accorions %}
+            <div class="accordion-border key_{{key}} work-package-item"
+                 role="listitem"
+                 aria-labelledby="work-package-title-{{ loop.index }}">
+
+                <!-- Work Package Toggle Button -->
+                <header class="row middle-xs accordion-toggle work-package-header"
+                        role="button"
+                        tabindex="0"
+                        aria-expanded="false"
+                        aria-controls="work-package-content-{{ loop.index }}"
+                        data-toggle="collapse"
+                        data-target="#work-package-content-{{ loop.index }}">
+
+                    <div class="col-xs green_bullet work-package-title-container">
+                        <h3 id="work-package-title-{{ loop.index }}" class="work-package-title">
+                            <strong class="work-package-prefix" aria-label="Work package {{ item.prefix }}">
+                                {{item.prefix | uppercase}}
+                            </strong>
+                            <span aria-hidden="true"> - </span>
+                            <span class="work-package-name">{{item.title}}</span>
+                        </h3>
+
+                        <!-- Screen reader description for work package -->
+                        <div class="sr-only work-package-context">
+                            Work package {{ item.prefix }}: {{ item.title }}. Click to view details.
+                        </div>
+                    </div>
+
+                    <div class="col-xs-2 end-xs plusminus expand-indicator" aria-hidden="true">
+                        <span class="plus" aria-hidden="true"></span>
+                        <span class="sr-only expand-text">Click to expand work package details</span>
+                        <span class="sr-only collapse-text" style="display: none;">Click to collapse work package details</span>
+                    </div>
+
+                    <!-- Toggle instructions for this specific item -->
+                    <span class="sr-only toggle-instructions">
+                        Press Enter or Space to expand or collapse {{ item.title }} work package details
+                    </span>
+                </header>
+
+                <!-- Work Package Content -->
+                <div id="work-package-content-{{ loop.index }}"
+                     class="accordion-content work-package-details"
+                     role="region"
+                     aria-labelledby="work-package-title-{{ loop.index }}"
+                     aria-hidden="true"
+                     style="display: none;">
+
+                    <div class="work-package-body" role="document">
+                        <!-- Content introduction for screen readers -->
+                        <div class="sr-only">
+                            Details for work package {{ item.prefix }} - {{ item.title }}:
+                        </div>
+                        {{item.body|raw}}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Work Packages Summary -->
+        <footer class="work-packages-summary sr-only" role="contentinfo">
+            End of work packages section. {{ accorions|length }} work packages available for review.
+        </footer>
+    </section>
+</main>
+
+<!-- Live Region for Accordion State Announcements -->
+<div id="work-packages-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>
+
+

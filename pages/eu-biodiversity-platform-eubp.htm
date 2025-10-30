@@ -1,0 +1,35 @@
+url = "/eu-biodiversity-platform-eubp"
+layout = "default"
+title = "EU Biodiversity Platform (EUBP)"
+
+[jumbotron jumbotron1]
+jumbotron = "eu-biodiversity-platform-eubp"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron2]
+jumbotron = "eu-biodiversity-platform-eubp-was-set-2022-provide"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[siteSearchInclude]
+
+==
+{% component 'siteSearchInclude' %}
+<div class="container-fluid eu-biodiversity-platform">
+    {% component 'jumbotron1' %}
+
+    <div class="container-fluid science-service-content-wrap">
+        <div class="layer">
+          <div class="container"></div>
+        </div>
+    </div>
+
+    {% component 'jumbotron2' %}
+
+    {% partial 'science-service' %}
+</div>
+
+

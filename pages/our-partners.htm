@@ -1,0 +1,187 @@
+url = "/our-partners"
+layout = "default"
+title = "Our Partners"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "partners"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[menu tabs_menu]
+start = "id-2"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Partners\Models\Partners;
+use Rainlab\User\Models\User as Profiles;
+
+function onStart(){
+	$this['partners'] =  Partners::get();
+
+    $this['partner_members'] = new class {
+        public function getProfiles($partnerId) {
+            return Profiles::where('is_visible', 1)->where('partner_id', $partnerId)->orderBy('name')->get();
+}
+};
+
+}
+
+
+function onPartners(){
+    if(post('code')){
+        $this['partners'] =  Partners::whereRaw('country_code ILIKE \'%'.post('code').'%\'')->where('type', 1)->get();
+    }
+
+    $this['partner_members'] = new class {
+        public function getProfiles($partnerId) {
+            return Profiles::where('is_visible', 1)->where('partner_id', $partnerId)->get();
+        }
+    };
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main" aria-labelledby="partners-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="partners-page-title" class="sr-only">Our Partners</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <!-- Jumbotron Section -->
+    <section role="banner"
+             aria-labelledby="featured-content-heading"
+             aria-describedby="featured-content-description">
+        <h2 id="featured-content-heading" class="sr-only">Featured Content</h2>
+        <div id="featured-content-description" class="sr-only">
+            Introduction and overview of our partner organizations and their locations
+        </div>
+        {% component 'jumbotron' %}
+    </section>
+
+    <!-- Partners Map Section -->
+    <section id="partners-map"
+             class="container-fluid page-bg map-section"
+             role="region"
+             aria-labelledby="partners-map-heading"
+             aria-describedby="partners-map-description">
+
+        <div class="container">
+            <header>
+                <h2 id="partners-map-heading" class="sr-only">Partners Location Map</h2>
+                <div id="partners-map-description" class="sr-only">
+                    Interactive map showing the geographical locations of our partner organizations across different countries
+                </div>
+            </header>
+
+            <!-- Tooltip for Map Interactions -->
+            <div class="tooltiptext"
+                 id="tooltip"
+                 role="tooltip"
+                 aria-hidden="true"
+                 aria-live="polite">
+                Bulgaria
+            </div>
+
+            <section class="container tabs_container partners" role="region" aria-labelledby="partner-heading">
+                <h1 id="partner-heading" class="sr-only">Partners</h1>
+                <div class="tabs" role="tablist" aria-label="Partners view options">
+
+                    <a class="" href="#mapView" role="tab" aria-selected="false" aria-controls="mapView" id="tab-map">Map View</a>
+
+                    <a class="" href="#listView" role="tab" aria-selected="true" aria-controls="listView" id="tab-list">List View</a>
+
+                </div>
+            </section>
+            <div class="row" id="mapView" role="tabpanel" aria-labelledby="tab-map">
+                <!-- Map Component -->
+                <div role="img"
+                     aria-labelledby="map-heading"
+                     aria-describedby="map-instructions"
+                    style="width: 100%"
+                >
+                    <h3 id="map-heading" class="sr-only">Interactive Partners Map</h3>
+                    <div id="map-instructions" class="sr-only">
+                        Use keyboard navigation to explore partner locations. Map shows {{ partners|length }} partner organizations.
+                    </div>
+                    {% partial 'map' %}
+                </div>
+
+
+                <!-- Partners Cards Section -->
+                <section id="partners-cards"
+                         class="container-fluid partners-cards-section"
+                         role="region"
+                         aria-labelledby="partners-cards-heading"
+                         aria-describedby="partners-cards-description">
+
+                    <div class="container">
+                        <header>
+                            <h2 id="partners-cards-heading" class="sr-only">Partner Organizations</h2>
+                            <div id="partners-cards-description" class="sr-only">
+                                Interactive cards showing {{ partners|length }} partner organizations. Each card can be activated to reveal detailed information, contact links, and partner websites.
+                            </div>
+                        </header>
+
+                        <div id="mycomponentpartners"
+                             class="row partners-grid"
+                             role="list"
+                             aria-label="List of {{ partners|length }} partner organizations">
+
+                        </div>
+
+                        <!-- Partners Summary -->
+                        <footer class="partners-cards-summary sr-only" role="contentinfo">
+                            End of partner organizations section. {{ partners|length }} partner organizations from various countries, each with contact information and official websites.
+                        </footer>
+                    </div>
+                </section>
+
+            </div>
+            <div class="row" id="listView" role="tabpanel" aria-labelledby="tab-list">
+                {% for partner in partners %}
+                <div class="col-md-4 col-xs-12">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="flip-card-content">
+                                    {% if partner.cover %}
+                                    <a href="{{partner.instituion_url}}" aria-label="Open the {{ partner.instituion }} website (opens in new tab)" target="_blank"><img alt="{{ partner.instituion }}" src="{{partner.cover.getThumb(auto,30, { mode : 'crop' } )}}"></a>
+                                    {% endif %}
+                                    <h3>{{ partner.instituion }}<br>{{ partner.country[0].name }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+<!--&lt;!&ndash; Live Region for Card Flip Announcements &ndash;&gt;-->
+<!--<div id="partners-live-region"-->
+<!--     aria-live="polite"-->
+<!--     aria-atomic="true"-->
+<!--     class="sr-only"-->
+<!--     role="status">-->
+<!--</div>-->
+

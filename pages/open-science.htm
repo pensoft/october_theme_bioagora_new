@@ -1,0 +1,100 @@
+url = "/open-science"
+layout = "default"
+title = "Open Science"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "open-science"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron2]
+jumbotron = "fair-principles-horizon-europe-guidelines"
+templates = "template3"
+description_limit = 0
+
+
+
+[menu tabs_menu]
+start = "id-17"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main" aria-labelledby="page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="page-title" class="sr-only">BioAgora Community Resources</h1>
+
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <!-- First Jumbotron Component -->
+    <section role="banner"
+             aria-labelledby="jumbotron-1-heading"
+             aria-describedby="jumbotron-1-description">
+        <h2 id="jumbotron-1-heading" class="sr-only">Featured Content</h2>
+        <div id="jumbotron-1-description" class="sr-only">Primary featured content and announcements</div>
+        {% component 'jumbotron' %}
+    </section>
+
+    <!-- Second Jumbotron Component -->
+    <section role="complementary"
+             aria-labelledby="jumbotron-2-heading"
+             aria-describedby="jumbotron-2-description">
+        <h2 id="jumbotron-2-heading" class="sr-only">Additional Featured Content</h2>
+        <div id="jumbotron-2-description" class="sr-only">Secondary featured content and highlights</div>
+        {% component 'jumbotron2' %}
+    </section>
+
+    <!-- Zenodo Community Section -->
+    <section id="zenodo-section"
+             class="container-fluid science-service"
+             role="region"
+             aria-labelledby="zenodo-heading"
+             aria-describedby="zenodo-description">
+        <div class="container">
+            <div class="row">
+                <header class="col-md-10 col-xs-12">
+                    <h2 id="zenodo-heading" class="fl-heading aos-init aos-animate" data-aos="fade-right">
+                        <span class="fl-heading-text">Find the BioAgora community on Zenodo</span>
+                    </h2>
+                    <div id="zenodo-description" class="sr-only">
+                        Access our research outputs, datasets, and publications on the Zenodo platform
+                    </div>
+                </header>
+                <div class="col-md-2 col-xs-12 end-md center-xs">
+                    <a href="https://zenodo.org/communities/bioagora"
+                       class="btn btn-float"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-describedby="zenodo-link-description">
+                        Click here
+                        <span class="sr-only">Visit Zenodo community (opens in new window)</span>
+                    </a>
+                    <span id="zenodo-link-description" class="sr-only">
+                        Browse and access BioAgora research publications, datasets, and community resources on Zenodo platform
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Live Region for Dynamic Announcements -->
+<div id="page-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>

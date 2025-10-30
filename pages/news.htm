@@ -1,0 +1,254 @@
+url = "/news/:slug?|[a-zA-Z\-0-9]"
+layout = "default"
+title = "News"
+
+
+[menu tabs_menu]
+start = "id-13"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Articles\Models\Category;
+use Pensoft\Articles\Models\Article;
+
+function onStart()
+{
+    $article = Pensoft\Articles\Models\Article::where('slug', $this->param('slug'))->first();
+
+    if($article){
+        $this['nextArticle'] = Article::where('id', '>', $article->id)
+                                      ->where('published', 'true')
+                                      ->where('published_at', '<=', 'now')
+                                      ->orderBy('id', 'asc')
+                                      ->first();
+
+        $this['previousArticle'] = Article::where('id', '<', $article->id)
+                                          ->where('published', 'true')
+                                          ->where('published_at', '<=', 'now')
+                                          ->orderBy('id', 'desc')
+                                          ->first();
+    }
+
+    $this['article'] = $article;
+    $this['categories'] = Category::whereNotIn('id', [9, 10, 11, 12, 13, 14, 15])->orderBy('sort_order')->orderBy('created_at', 'desc')->get();
+
+    $categoryId = input('categoryId', 'all');
+
+    if ($categoryId !== 'all' && !is_numeric($categoryId)) {
+        return redirect('news');
+    }
+
+    $this['categoryId'] = $categoryId;
+
+    if ($categoryId === 'all') {
+        $records = Article::news()->where('published_at', '<=', 'now')
+                                  ->where('published', 'true')
+                                  ->orderBy('published_at', 'DESC')
+                                  ->paginate(12);
+    } else {
+        $records = Article::news()->whereHas('categories', function ($query) use ($categoryId) {
+                     $query->where('id', $categoryId);
+                 })->where('published_at', '<=', 'now')
+                   ->where('published', 'true')
+                   ->orderBy('published_at', 'DESC')
+                   ->paginate(12);
+    }
+
+    if ($categoryId !== 'all') {
+        $records->appends(['categoryId' => $categoryId]);
+    }
+
+    $this['records'] = $records;
+
+    if($this['article']) {
+        $this['is_detail_page'] = true;
+        $this['allow_share'] = $this['article']['allow_share'] == 'yes' ? true : false;
+
+        if($this['is_detail_page']) {
+            $seoTitle = $this['article']['title'];
+            $seoKeywords = $this['article']['meta_keywords'] ?: $this['article']['keywords'];
+            $seoDescription = str_limit(Html::strip($this['article']['content']), 255);
+
+            if (class_exists('\BennoThommo\Meta\Meta')) {
+                \BennoThommo\Meta\Meta::set('title', $seoTitle);
+                \BennoThommo\Meta\Meta::set('keywords', $seoKeywords);
+                \BennoThommo\Meta\Meta::set('description', $seoDescription);
+            }
+        }
+
+        if($this['allow_share']) {
+            $this['page_url'] = $this->pageUrl('');
+            $this['encoded_title'] = urlencode($this['article']['title']);
+            $this['slug'] = $this['article']['slug'];
+            \BennoThommo\Meta\Meta::set('twitter:card', 'summary_large_image');
+            \BennoThommo\Meta\Meta::set('twitter:title', $this['article']['title']);
+            \BennoThommo\Meta\Meta::set('twitter:description', str_limit(Html::strip($this['article']['content']), 255));
+            \BennoThommo\Meta\Meta::set('og:title', $this['article']['title']);
+            \BennoThommo\Meta\Meta::set('og:description', str_limit(Html::strip($this['article']['content']), 255));
+            \BennoThommo\Meta\Meta::set('og:type', 'article');
+            \BennoThommo\Meta\Meta::set('og:url', $this->pageUrl(''));
+
+            if ($this['article']['cover']) {
+                \BennoThommo\Meta\Meta::set('twitter:image', $this['article']['cover']->getThumb(600, null, ['mode' => 'auto']));
+                \BennoThommo\Meta\Meta::set('og:image', $this['article']['cover']->getThumb(600, 314, ['mode' => 'crop']));
+                \BennoThommo\Meta\Meta::set('og:image:width', 600);
+                \BennoThommo\Meta\Meta::set('og:image:height', 314);
+            }
+        }
+    }
+}
+?>
+==
+{% if is_detail_page %}
+
+<article class="single-news-item" role="main" aria-labelledby="article-title">
+    <header class="container-fluid news-header" role="banner">
+        <div class="img-container">
+            {% if article.cover %}
+            <img src="{{ article.cover.path }}"
+                 alt="Featured image for {{ article.title }}"
+                 role="img"
+                 aria-describedby="article-title"/>
+            {% endif %}
+        </div>
+        <div class="row intro-section">
+            <h1 id="article-title" class="col-xs-12 news-title text-center">{{ article.title }}</h1>
+            <div class="col-xs-12 center-xs article-meta" role="complementary" aria-label="Article information">
+                <time datetime="{{ article.published_at|date('c') }}" aria-label="Published on">
+                    {{ article.published_at|date("d M Y") }}
+                </time>
+                {% if article.categories.count %}
+                <span aria-hidden="true"> / </span>
+                <span class="category-info">
+                    <a href="/news?categoryId={{ article.categories.first().id }}"
+                       aria-describedby="category-desc">
+                        {{ article.categories.first().name }}
+                    </a>
+                    <span id="category-desc" class="sr-only">View all articles in {{ article.categories.first().name }} category</span>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content" class="container" role="main">
+        <section class="body-content" aria-labelledby="article-content-heading">
+            <h2 id="article-content-heading" class="sr-only">Article Content</h2>
+            {% if article.content %}
+            <div class="article-body" role="document">
+                {{ article.content|raw }}
+            </div>
+            {% endif %}
+        </section>
+
+        <hr class="news-separator" aria-hidden="true">
+
+        <nav class="prev-next-nav" aria-label="Article navigation" role="navigation">
+            <h2 class="sr-only">Related Articles</h2>
+            <div class="row between-xs">
+                {% if previousArticle %}
+                <div class="col-md text-start col-xs-12 start-xs">
+                    <a href="{{ 'news'|page({ slug: previousArticle.slug }) }}"
+                       class="prev-article-link"
+                       aria-describedby="prev-desc">
+                        <span aria-hidden="true">←</span>
+                        <span class="nav-label">Previous:</span>
+                        <span class="nav-title">{{ previousArticle.title }}</span>
+                    </a>
+                    <span id="prev-desc" class="sr-only">Go to previous article: {{ previousArticle.title }}</span>
+                </div>
+                {% endif %}
+                {% if nextArticle %}
+                <div class="col-md text-start col-xs-12 end-xs">
+                    <a href="{{ 'news'|page({ slug: nextArticle.slug }) }}"
+                       class="next-article-link"
+                       aria-describedby="next-desc">
+                        <span class="nav-label">Next:</span>
+                        <span class="nav-title">{{ nextArticle.title }}</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                    <span id="next-desc" class="sr-only">Go to next article: {{ nextArticle.title }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+    </main>
+</article>
+
+{% else %}
+<!-- News List View -->
+
+<main id="main-content" class="container pt-0 mt-0" role="main" aria-labelledby="news-page-title">
+
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+
+    <header class="news-page-header">
+        <h1 id="news-page-title" class="text-center mt-4 mb-4">
+            Keep up to date with the latest news from the BioAgora project!
+        </h1>
+    </header>
+
+    {% if categories.count > 0 %}
+    <nav class="category-tabs-container mb-2"
+         role="navigation"
+         aria-labelledby="category-filter-heading">
+        <h2 id="category-filter-heading" class="sr-only">Filter news by category</h2>
+        <div class="row category-tabs-sub"
+             id="category-tabs"
+             role="tablist"
+             aria-label="News categories">
+            <a href="{{ 'news'|page }}"
+               role="tab"
+               class="category-tab {{ 'all' == categoryId ? 'active' : '' }}"
+               aria-selected="{{ 'all' == categoryId ? 'true' : 'false' }}"
+               aria-describedby="all-news-desc">
+                All News
+            </a>
+            <span id="all-news-desc" class="sr-only">View all news articles</span>
+
+            {% for category in categories %}
+            <a href="{{ 'news'|page }}?categoryId={{ category.id }}"
+               role="tab"
+               class="category-tab {{ category.id == categoryId ? 'active' : '' }}"
+               aria-selected="{{ category.id == categoryId ? 'true' : 'false' }}"
+               aria-describedby="category-{{ category.id }}-desc">
+                {{ category.name }}
+            </a>
+            <span id="category-{{ category.id }}-desc" class="sr-only">
+                View news articles in {{ category.name }} category
+            </span>
+            {% endfor %}
+        </div>
+    </nav>
+    {% endif %}
+
+    <section class="newslist-records"
+             id="newslist-records"
+             aria-labelledby="news-list-heading"
+             role="region">
+        <h2 id="news-list-heading" class="sr-only">News Articles List</h2>
+        {% partial 'components/newslist-records' %}
+    </section>
+
+    <nav class="pagination-container"
+         role="navigation"
+         aria-label="News pagination">
+        <div class="row container">
+            {{ records.render|raw }}
+        </div>
+    </nav>
+</main>
+
+<!--<div class="container flower-bg" aria-hidden="true" role="presentation"></div>-->
+{% endif %}

@@ -1,0 +1,489 @@
+url = "/events/:slug?|[a-zA-Z\-0-9]"
+layout = "default"
+title = "Events"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+
+[calendar]
+default = "true"
+limit = "null"
+category = "null"
+language = "en"
+redirect_to_detailed_page = "false"
+default_view = "dayGridMonth"
+
+
+[menu tabs_menu]
+start = "id-13"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Calendar\Models\Entry;
+use Carbon\Carbon;
+use Pensoft\Articles\Models\Category;
+use Pensoft\Articles\Models\Article;
+
+function onStart(){
+
+    if($this->param('slug')){
+$this['entry'] =  Entry::select(
+'*',
+'title',
+'place',
+'description',
+'url',
+
+DB::raw("to_char(\"start\", 'DD') as start_day"),
+DB::raw("to_char(\"start\", 'YYYY') as start_year"),
+DB::raw("to_char(\"end\", 'DD') as end_day"),
+DB::raw("to_char(\"end\", 'YYYY') as end_year"),
+DB::raw("to_char(\"start\", 'month') as start_month"),
+DB::raw("to_char(\"end\", 'month') as end_month"),
+DB::raw("
+\"end\" is not null as has_end
+")
+
+
+)->where('slug', $this->param('slug'))->first();
+
+\BennoThommo\Meta\Meta::set('twitter:card', 'summary_large_image');
+\BennoThommo\Meta\Meta::set('twitter:title', $this['entry']['title']);
+\BennoThommo\Meta\Meta::set('twitter:description', str_limit(Html::strip($this['entry']['description']), 255));
+\BennoThommo\Meta\Meta::set('og:title', $this['entry']['title']);
+\BennoThommo\Meta\Meta::set('og:description', str_limit(Html::strip($this['entry']['description']), 255) );
+\BennoThommo\Meta\Meta::set('og:type', 'article');
+\BennoThommo\Meta\Meta::set('og:url', $this->pageUrl(''));
+if($this['entry']['cover_image']){
+\BennoThommo\Meta\Meta::set('twitter:image', $this['entry']['cover_image']->getThumb(600, null, ['mode' => 'auto']));
+
+
+\BennoThommo\Meta\Meta::set('og:image', $this['entry']['cover_image']->getThumb(600, 314, ['mode' => 'crop']));
+\BennoThommo\Meta\Meta::set('og:image:width', 600);
+\BennoThommo\Meta\Meta::set('og:image:height', 314);
+}
+
+}
+$this['page_url'] = $this->pageUrl('');
+
+$this['entries'] = Entry::where('end', '>=', Carbon::now())->orderBy('start', 'asc')->paginate(20);
+
+$this['past_entries'] = Entry::where('end', '<', Carbon::now())->orderBy('start', 'desc')->paginate(20);
+
+
+$this['slug'] = $this->param('slug');
+
+$categoryId = 1;
+$this['events_articles'] = Article::news()->whereHas('categories', function ($query) use ($categoryId) {
+$query->where('id', $categoryId);
+})->where('published_at', '<=', 'now')
+->where('published', 'true')
+->orderBy('published_at', 'DESC')->get();
+
+
+$this['page_url'] = $this->pageUrl('');
+
+
+
+
+
+}
+?>
+==
+{% if not slug %}
+
+<main id="main-content" class="container-fluid events" role="main" aria-labelledby="events-page-title">
+    <header class="container">
+        <h1 id="events-page-title" class="sr-only">Events and News</h1>
+
+        <div class="container">
+            <div class="category-tabs">
+                {% component 'tabs_menu' %}
+            </div>
+        </div>
+
+        <!-- Primary Navigation Tabs -->
+        <nav id="events-navigation" class="tabs" role="navigation" aria-labelledby="primary-tabs-heading">
+            <h2 id="primary-tabs-heading" class="sr-only">Events Page Navigation</h2>
+            <ul class="tabs-list" role="tablist">
+                <li role="presentation">
+                    <a href="#events"
+                       role="tab"
+                       aria-selected="true"
+                       aria-controls="events-panel"
+                       id="events-tab"
+                       tabindex="0">
+                        Events
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#news-events"
+                       role="tab"
+                       aria-selected="false"
+                       aria-controls="news-events-panel"
+                       id="news-events-tab"
+                       tabindex="-1">
+                        News about events
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container events_container">
+        <!-- Events Tab Panel -->
+        <section class="row"
+                 id="events"
+                 role="tabpanel"
+                 aria-labelledby="events-tab"
+                 aria-describedby="events-description">
+            <div id="events-description" class="sr-only">
+                Browse upcoming and past events in list or calendar view
+            </div>
+
+            <!-- Sub-navigation for List/Calendar Views -->
+            <nav class="subtabs_events" aria-labelledby="view-options-heading">
+                <h3 id="view-options-heading" class="sr-only">View Options</h3>
+                <ul class="ui-tabs-nav" role="tablist" aria-label="Event view options">
+                    <li role="presentation">
+                        <a href="#listView"
+                           role="tab"
+                           aria-selected="true"
+                           aria-controls="listView-panel"
+                           id="listView-tab"
+                           aria-describedby="listView-desc">
+                            <span class="sr-only">List View</span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                        <span id="listView-desc" class="sr-only">View events as a list</span>
+                    </li>
+                    <li role="presentation">
+                        <a href="#calendarView"
+                           role="tab"
+                           aria-selected="false"
+                           aria-controls="calendarView-panel"
+                           id="calendarView-tab"
+                           aria-describedby="calendarView-desc">
+                            <span class="sr-only">Calendar View</span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                        <span id="calendarView-desc" class="sr-only">View events in calendar format</span>
+                    </li>
+                </ul>
+
+                <!-- List View Panel -->
+                <div id="listView"
+                     class="subtabContent"
+                     role="tabpanel"
+                     aria-labelledby="listView-tab"
+                     aria-describedby="events-list-description">
+
+                    <div id="events-list-description" class="sr-only">
+                        List of upcoming events with dates, images, and details
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <section class="events_list_container" aria-labelledby="upcoming-events-heading">
+                        <h3 id="upcoming-events-heading" class="sr-only">Upcoming Events</h3>
+
+                        <div class="events-list" role="list" aria-label="Upcoming events">
+                            {% for entry in entries %}
+                            {% set url = entry.url ? entry.url : '/events/' ~ entry.slug %}
+
+                            <article class="row entry_item middle-xs" role="listitem">
+                                <!-- Event Date -->
+                                <div class="col-md-2 col-xs-12 date_container">
+                                    <time datetime="{{entry.start|date('c')}}"
+                                          aria-label="Event date">
+                                        <span class="date_day" aria-label="Date and month">{{entry.start|date("j M")}}</span>
+                                        <span class="date_year" aria-label="Year">{{entry.start|date("Y")}}</span>
+                                    </time>
+                                </div>
+
+                                <!-- Event Content -->
+                                <div class="col-md-8 col-xs-12">
+                                    {% if entry.cover_image %}
+                                    <a href="{{'events'|page}}/{{entry.slug}}"
+                                       aria-describedby="event-image-{{entry.slug}}-desc">
+                                        <img src="{{entry.cover_image|crop_image|resize(174, auto, {'mode': 'crop'})}}"
+                                             alt="Cover image for {{entry.title}}"
+                                             role="img"
+                                             loading="lazy">
+                                    </a>
+                                    <span id="event-image-{{entry.slug}}-desc" class="sr-only">
+                                        View details for {{entry.title}}
+                                    </span>
+                                    {% endif %}
+
+                                    <h4 class="event-title">
+                                        <a href="{{'events'|page}}/{{entry.slug}}"
+                                           aria-describedby="event-title-{{entry.slug}}-desc">
+                                            {{entry.title|raw}}
+                                        </a>
+                                    </h4>
+                                    <span id="event-title-{{entry.slug}}-desc" class="sr-only">
+                                        Event on {{entry.start|date("j M Y")}}
+                                    </span>
+                                </div>
+
+                                <!-- Event Action -->
+                                <div class="col-md-2 col-xs-12 end-md center-xs">
+                                    <a href="{{'events'|page}}/{{entry.slug}}"
+                                       class="btn btn-primary"
+                                       aria-describedby="learn-more-{{entry.slug}}-desc">
+                                        Learn more
+                                    </a>
+                                    <span id="learn-more-{{entry.slug}}-desc" class="sr-only">
+                                        Learn more about {{entry.title}}
+                                    </span>
+                                </div>
+                            </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <!-- Pagination for Upcoming Events -->
+                    {% if entries.count > 20 %}
+                    <nav class="pagination-container"
+                         role="navigation"
+                         aria-label="Upcoming events pagination">
+                        <div class="row container">
+                            {{ entries.fragment('listView').render|raw }}
+                        </div>
+                    </nav>
+                    {% endif %}
+
+                    <!-- Past Events Section -->
+                    {% if past_entries.count > 0 %}
+                    <section class="col-xs-12" aria-labelledby="past-events-heading">
+                        <h3 id="past-events-heading">Past events</h3>
+
+                        <div class="events_list_container">
+                            <div class="events-list" role="list" aria-label="Past events">
+                                {% for entry in past_entries %}
+                                {% set url = entry.url ? entry.url : '/events/' ~ entry.slug %}
+
+                                <article class="row entry_item middle-xs" role="listitem">
+                                    <!-- Past Event Date -->
+                                    <div class="col-md-2 col-xs-12 date_container">
+                                        <time datetime="{{entry.start|date('c')}}"
+
+                                              aria-label="Past event date">
+                                            <span class="date_day" aria-label="Date and month">{{entry.start|date("j M")}}</span>
+                                            <span class="date_year" aria-label="Year">{{entry.start|date("Y")}}</span>
+                                        </time>
+                                    </div>
+
+                                    <!-- Past Event Content -->
+                                    <div class="col-md-8 col-xs-12">
+                                        {% if entry.cover_image %}
+                                        <a href="{{'events'|page}}/{{entry.slug}}"
+                                           aria-describedby="past-event-image-{{entry.slug}}-desc">
+                                            <img src="{{entry.cover_image|crop_image|resize(174, auto, {'mode': 'crop'})}}"
+                                                 alt="Cover image for past event: {{entry.title}}"
+                                                 role="img"
+                                                 loading="lazy">
+                                        </a>
+                                        <span id="past-event-image-{{entry.slug}}-desc" class="sr-only">
+                                            View details for past event: {{entry.title}}
+                                        </span>
+                                        {% endif %}
+
+                                        <h4 class="event-title">
+                                            <a href="{{'events'|page}}/{{entry.slug}}"
+                                               aria-describedby="past-event-title-{{entry.slug}}-desc">
+                                                {{entry.title|raw}}
+                                            </a>
+                                        </h4>
+                                        <span id="past-event-title-{{entry.slug}}-desc" class="sr-only">
+                                            Past event from {{entry.start|date("j M Y")}}
+                                        </span>
+                                    </div>
+
+                                    <!-- Past Event Action -->
+                                    <div class="col-md-2 col-xs-12 end-md center-xs">
+                                        <a href="{{'events'|page}}/{{entry.slug}}"
+                                           class="btn btn-primary"
+                                           aria-describedby="learn-more-past-{{entry.slug}}-desc">
+                                            Learn more
+                                        </a>
+                                        <span id="learn-more-past-{{entry.slug}}-desc" class="sr-only">
+                                            Learn more about past event: {{entry.title}}
+                                        </span>
+                                    </div>
+                                </article>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Pagination for Past Events -->
+                        <nav class="pagination-container"
+                             role="navigation"
+                             aria-label="Past events pagination">
+                            <div class="row container">
+                                {{ past_entries.fragment('listView').render|raw }}
+                            </div>
+                        </nav>
+                    </section>
+                    {% endif %}
+                </div>
+
+                <!-- Calendar View Panel -->
+                <div id="calendarView"
+                     class="subtabContent"
+                     role="tabpanel"
+                     aria-labelledby="calendarView-tab"
+                     aria-describedby="calendar-description">
+                    <div id="calendar-description" class="sr-only">
+                        Calendar view of events by date
+                    </div>
+                    {% component 'calendar' %}
+                </div>
+            </nav>
+        </section>
+
+        <!-- News about Events Tab Panel -->
+        <section class="row news"
+                 id="news-events"
+                 role="tabpanel"
+                 aria-labelledby="news-events-tab"
+                 aria-describedby="news-events-description">
+            <div id="news-events-description" class="sr-only">
+                News articles related to events and activities
+            </div>
+
+            <div class="newslist-records">
+                <h3 class="sr-only">Event-related News Articles</h3>
+                {% partial 'components/newslist-records' records=events_articles %}
+            </div>
+        </section>
+    </div>
+
+    <!-- Events Bulletin -->
+    <aside role="complementary" aria-labelledby="bulletin-heading">
+        <h2 id="bulletin-heading" class="sr-only">Events Bulletin</h2>
+        {% partial 'events-bulletin' %}
+    </aside>
+</main>
+
+{% else %}
+
+<main id="main-content" class="container" style="max-width: 950px;" role="main" aria-labelledby="event-title">
+    <article class="row single-news-item" role="article">
+        <header class="col-md col-xs-12">
+            <div class="news-title">
+                <h1 id="event-title" class="single-new-title">{{entry.title}}</h1>
+            </div>
+
+            <!-- Event Date and Location -->
+            <div class="event-meta" role="complementary" aria-label="Event details">
+                <div class="text-published">
+                    <time datetime="{{entry.start|date('c')}}" aria-label="Event date and time">
+                        {% if entry.start|date("j") == entry.end|date("j") %}
+                        {{entry.start|date("j M Y")}}
+                        {% elseif entry.start|date("M") == entry.end|date("M") %}
+                        {{entry.start|date("j")}}-{{entry.end|date("j M Y")}}
+                        {% else %}
+                        {{entry.start|date("d M Y")}} - {{entry.end|date("d M Y")}}
+                        {% endif %}
+                    </time>
+                    {% if entry.place %}
+                    <address class="event-location" aria-label="Event location">
+                        <br>{{entry.place}}
+                    </address>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Event Image -->
+        <div class="col-xs-12">
+            {% if entry.cover_image %}
+            <figure class="event-image-container">
+                <img class="content"
+                     src="{{ entry.cover_image|crop_image|resize(673, auto, { mode: 'crop' }) }}"
+                     alt="Featured image for {{entry.title}}"
+                     role="img" />
+                <figcaption class="sr-only">
+                    Main image for the event: {{entry.title}}
+                </figcaption>
+            </figure>
+            {% endif %}
+        </div>
+
+        <!-- Event Description -->
+        <section class="col-xs-12" aria-labelledby="event-description-heading">
+            <h2 id="event-description-heading" class="sr-only">Event Description</h2>
+            <div class="content event-description" role="document">
+                {{entry.description|raw}}
+            </div>
+        </section>
+
+        <!-- Event Actions and Sharing -->
+        <footer class="col-xs-12" id="event-actions">
+            {% if entry.url %}
+            <div class="external-link-container">
+                <a href="{{entry.url}}"
+                   class="read_more"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   aria-describedby="external-website-desc">
+                    Go to event website
+                    <span class="sr-only">(opens in new window)</span>
+                </a>
+                <span id="external-website-desc" class="sr-only">
+                    Visit the official website for {{entry.title}}
+                </span>
+            </div>
+            {% endif %}
+
+            <!-- Social Sharing -->
+            <section class="row share_container middle-xs"
+                     aria-labelledby="sharing-heading"
+                     role="complementary">
+                <div class="col-cx-12 center-xs share_label">
+                    <h3 id="sharing-heading">Share this event</h3>
+                </div>
+                <div class="col-cx-12 center-xs">
+                    <nav aria-label="Social media sharing options">
+                        <ul class="social-sharing-list" role="list">
+                        <li role="listitem">
+                                <a href="https://bsky.app/intent/compose?text={{article.title}}20%{{page_url}}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="pr p-bluesky big hexagon"
+                                   aria-describedby="bluesky-share-desc">
+                                    <span class="sr-only">Share on BlueSky</span>
+                                    <span aria-hidden="true" class="social-icon"></span>
+                                </a>
+                                <span id="bluesky-share-desc" class="sr-only">
+                                    Share {{entry.title}} on BlueSky (opens in new window)
+                                </span>
+                            </li>
+                            <li role="listitem">
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{page_url}}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="pr p-linkedin big hexagon"
+                                   aria-describedby="linkedin-share-desc">
+                                    <span class="sr-only">Share on LinkedIn</span>
+                                    <span aria-hidden="true" class="social-icon"></span>
+                                </a>
+                                <span id="linkedin-share-desc" class="sr-only">
+                                    Share {{entry.title}} on LinkedIn (opens in new window)
+                                </span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        </footer>
+    </article>
+</main>
+
+{% endif %}

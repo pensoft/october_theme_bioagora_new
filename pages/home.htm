@@ -1,0 +1,216 @@
+url = "/"
+layout = "default"
+title = "BioAgora"
+is_hidden = 0
+meta_description = "The BioAgora project"
+robot_index = "index"
+robot_follow = "follow"
+
+[jumbotron intro]
+jumbotron = "homepage-intro"
+title = 0
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron numbers]
+jumbotron = "homepage-numbers"
+title = 0
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron science_service]
+jumbotron = "science-service-biodiversity"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron info]
+jumbotron = "homepage-info-bottom"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+==
+<?php
+use Pensoft\Articles\Models\Article;
+use Carbon\Carbon;
+
+function onStart(){
+    $this['news'] = Article::news()->where('published_at', '<=', 'now()')->where('published', 'true')->take(3)->orderBy('published_at', 'DESC')->get();
+
+}
+?>
+==
+<main id="main-content" role="main" aria-labelledby="homepage-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="homepage-title" class="sr-only">BioAgora Homepage</h1>
+
+    <!-- Introduction Section -->
+    <section role="banner" class="homepage_intro"
+             aria-labelledby="intro-heading"
+             aria-describedby="intro-description">
+        <h2 id="intro-heading" class="sr-only">Introduction</h2>
+        <div id="intro-description" class="sr-only">
+            Welcome to BioAgora - learn about our mission, vision, and key initiatives
+        </div>
+        {% component 'intro' %}
+    </section>
+
+    <!-- Statistics/Numbers Section -->
+    <section id="statistics"
+             class="container-fluid"
+             role="region"
+             aria-labelledby="statistics-heading"
+             aria-describedby="statistics-description">
+        <h2 id="statistics-heading" class="sr-only">Key Statistics and Numbers</h2>
+        <div id="statistics-description" class="sr-only">
+            Important figures and metrics about BioAgora's impact and achievements
+        </div>
+        {% component 'numbers' %}
+    </section>
+
+    <!-- Science Services Section -->
+    <section id="services"
+             class="container-fluid science_service_container"
+             role="region"
+             aria-labelledby="services-heading"
+             aria-describedby="services-description">
+        <h2 id="services-heading" class="sr-only">Science Services</h2>
+        <div id="services-description" class="sr-only">
+            Explore our scientific services, research support, and collaborative opportunities
+        </div>
+        {% component 'science_service' %}
+    </section>
+
+    <!-- Latest News Section -->
+    {% if news.count %}
+    <section id="latest-news"
+             class="container-fluid highlights-news"
+             role="region"
+             aria-labelledby="news-section-heading"
+             aria-describedby="news-section-description">
+
+        <div class="container">
+            <div class="row middle-xs">
+                <header class="col-md-8 start-md center-xs">
+                    <h2 id="news-section-heading" class="display-1">
+                        Our latest news
+                    </h2>
+                    <div id="news-section-description" class="sr-only">
+                        Stay updated with our most recent announcements, research findings, and community updates. {{ news.count }} articles available.
+                    </div>
+                </header>
+
+                <div class="col-md-4 end-md center-xs">
+                    <nav aria-label="News navigation">
+                        <a href="{{'news'|page}}"
+                           class="btn btn-primary"
+                           aria-describedby="all-news-link-desc">
+                            View all news
+                        </a>
+                        <span id="all-news-link-desc" class="sr-only">
+                            Browse all {{ news.count }} news articles and announcements
+                        </span>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Article Highlights Component -->
+            <div role="complementary"
+                 aria-labelledby="highlights-heading"
+                 aria-describedby="highlights-description">
+                <h3 id="highlights-heading" class="sr-only">Featured News Articles</h3>
+                <div id="highlights-description" class="sr-only">
+                    Highlighted news articles and recent updates from BioAgora
+                </div>
+                <div class="container highlights-news">
+                    <div class="row newslist">
+                        <div class="col-xs-12" role="list"
+                             aria-label="List of {{ highlights|length }} news highlights">
+                            {% for highlight in news %}
+                            <article class="col-xs-12 col-md-3 news-item item-{{slug}} highlight-article"
+                                     role="listitem"
+                                     aria-labelledby="highlight-title-{{ loop.index }}">
+                                <div class="row news_column">
+                                    {% if highlight.slug %}
+                                    <a href="{{'news'|page}}/{{highlight.slug}}"
+                                       aria-describedby="highlight-image-{{ loop.index }}-desc"
+                                       tabindex="0">
+                                        {% endif %}
+
+                                        <img class="news-img-top"
+                                             src="{{ highlight.cover|crop_image|resize(354, 311, {'mode': 'crop'}) }}"
+                                             alt="Featured image for news article: {{ highlight.title|striptags }}"
+                                             role="img"
+                                             aria-describedby="highlight-img-context-{{ loop.index }}"
+                                             loading="lazy">
+
+                                        {% if highlight.slug %}
+                                    </a>
+                                    {% endif %}
+                                    <div class="news-container col-xs-12">
+                                        <time class="text-published" aria-label="Published on">{{highlight.pretty_published_at}}</time>
+                                        <!-- Article Title -->
+                                        <header class="news-title">
+                                            <h3 id="highlight-title-{{ loop.index }}">
+                                                {% if highlight.slug %}
+                                                <a href="{{'news'|page}}/{{highlight.slug}}"
+                                                   aria-describedby="highlight-context-{{ loop.index }}">
+                                                    {{ highlight.title|length > 99 ? highlight.title|striptags|slice(0, 99)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
+                                                    {% if highlight.title|length > 99 %}
+                                                    <span class="sr-only"> (title truncated)</span>
+                                                    {% endif %}
+                                                </a>
+                                                {% else %}
+                                                {{ highlight.title|length > 99 ? highlight.title|striptags|slice(0, 99)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
+                                                {% if highlight.title|length > 99 %}
+                                                <span class="sr-only"> (title truncated)</span>
+                                                {% endif %}
+                                                {% endif %}
+                                            </h3>
+
+                                            {% if highlight.slug %}
+                                            <span id="highlight-context-{{ loop.index }}" class="sr-only">
+                                               Published {{ highlight.pretty_published_at }}. Click to read the complete article.
+                                               {% if highlight.title|length > 99 %}
+                                               Full title: {{ highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
+                                               {% endif %}
+                                            </span>
+                                            {% endif %}
+                                        </header>
+                                    </div>
+                                </div>
+                            </article>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+
+
+    <!-- Subscribe newsletter -->
+    <div class="container">
+        <section id="newsletter_subscribe"
+                 class="subscriber"
+                 role="region"
+                 aria-labelledby="newsletter_subscribe-heading"
+                 aria-describedby="newsletter_subscribe-description">
+            <h2 id="newsletter_subscribe-heading" class="sr-only">Subscribe to our newsletter</h2>
+
+            <div class="row middle-xs">
+                <div class="col-md-9 col-xs-12">Subscribe to our newsletter</div>
+                <div class="col-md-3 col-xs-12 end-md center-xs"><a href="" target="_blank" class="btn btn-primary">Subscribe</a></div>
+            </div>
+        </section>
+    </div>
+
+
+
+</main>

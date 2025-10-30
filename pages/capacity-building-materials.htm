@@ -1,0 +1,183 @@
+url = "/capacity-building-materials"
+layout = "default"
+title = "Capacity Building Materials"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "capacity-building"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+
+
+[menu tabs_menu]
+start = "id-17"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Knowledgelibrary\Models\Data;
+use Carbon\Carbon;
+use System\Models\File;
+
+function onStart(){
+    $this['publications'] = Data::where('format_id', 3)->get();
+
+
+    if(get('download')){
+        $file = File::find((int)get('download'));
+        $file_name = $file->getLocalPath();
+        $recordName = get('file_name') ? get('file_name') : 'REST-COAST_flyer';
+        $ext= $file->getExtension();
+
+        if (file_exists($file_name)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header("Content-Type: application/force-download");
+            header('Content-Disposition: attachment; filename='.$recordName);
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file_name));
+            ob_clean();
+            flush();
+            readfile($file_name);
+            exit();
+        }
+        return Redirect::to('/media-center/flyer');
+    }
+
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+<!-- Skip Links for Screen Readers -->
+
+<main id="main-content" role="main" aria-labelledby="publications-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="publications-page-title" class="sr-only">Publications</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <!-- Jumbotron Section -->
+    <section role="banner"
+             aria-labelledby="featured-content-heading"
+             aria-describedby="featured-content-description">
+        <h2 id="featured-content-heading" class="sr-only">Featured Content</h2>
+        <div id="featured-content-description" class="sr-only">
+            Featured information about our publications and research outputs
+        </div>
+        {% component 'jumbotron' %}
+    </section>
+
+    <!-- Publications List Section -->
+    <section id="publications-list"
+             class="container publications-section"
+             role="region"
+             aria-labelledby="publications-list-heading"
+             aria-describedby="publications-list-description">
+
+        <header>
+            <h2 id="publications-list-heading" class="sr-only">Available Publications</h2>
+            <div id="publications-list-description" class="sr-only">
+                Browse our collection of {{ publications|length }} publications. Each includes cover image, title, and download or web page link.
+            </div>
+        </header>
+
+        <div class="publications-container"
+             role="list"
+             aria-label="List of {{ publications|length }} publications">
+
+            {% for item in publications %}
+            {% set url = '' %}
+            {% if item.web_page %}
+            {% set url = item.web_page %}
+            {% endif %}
+
+            <article class="row middle-md publication-item"
+                     role="listitem"
+                     aria-labelledby="publication-title-{{ loop.index }}">
+
+                <!-- Publication Cover Image -->
+                <div class="col-md-4 col-xs-12 publication-cover">
+                    <figure class="publication-image-container">
+                        <img src="{{item.cover.getThumb(150, 150, { mode: 'crop' })}}"
+                             alt="Cover image for publication: {{item.title}}"
+                             role="img"
+                             aria-describedby="publication-image-{{ loop.index }}-desc"
+                             width="150"
+                             height="150">
+                        <figcaption id="publication-image-{{ loop.index }}-desc" class="sr-only">
+                            Cover image for the publication titled "{{item.title}}"
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <!-- Publication Title and Link -->
+                <div class="col-md-8 col-xs-12 publication-content">
+                    <header class="publication-header">
+                        <h3 id="publication-title-{{ loop.index }}" class="publication-title">
+                            <a href="{% if item.file %}{{ ''|page }}?{{queries}}&download={{item.file.id}}&file_name={{item.file.file_name|replace({' ': '_'})}}{% else %}{{url}}{% endif %}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               aria-describedby="publication-link-{{ loop.index }}-desc"
+                               title="Access {{item.title}}">
+                                {{item.title}}
+                                <span class="sr-only">
+                                    {% if item.file %}
+                                    (download file, opens in new window)
+                                    {% else %}
+                                    (view online, opens in new window)
+                                    {% endif %}
+                                </span>
+                            </a>
+                        </h3>
+
+                        <span id="publication-link-{{ loop.index }}-desc" class="sr-only">
+                            {% if item.file %}
+                            Download the publication "{{item.title}}" as a file
+                            {% else %}
+                            View the publication "{{item.title}}" on external website
+                            {% endif %}
+                        </span>
+
+                        <!-- Publication Type Indicator -->
+                        <div class="publication-type sr-only" role="complementary">
+                            Publication type:
+                            {% if item.file %}
+                            Downloadable document
+                            {% else %}
+                            External web page
+                            {% endif %}
+                        </div>
+                    </header>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Publications Summary -->
+        <footer class="publications-summary sr-only" role="contentinfo">
+            End of publications list. {{ publications|length }} publications available for access.
+        </footer>
+    </section>
+</main>
+
+<!-- Live Region for Dynamic Announcements -->
+<div id="publications-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>

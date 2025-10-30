@@ -1,0 +1,209 @@
+url = "/promotional-materials"
+layout = "default"
+title = "Promotional Materials"
+
+[siteSearchInclude]
+
+[jumbotron]
+jumbotron = "promotional-materials"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[builderList mediaFlyersList]
+modelClass = "pensoft\Media\Models\Flyers"
+scope = "-"
+scopeValue = "{{ :scope }}"
+displayColumn = "name"
+noRecordsMessage = "No records found"
+detailsPage = "-"
+detailsUrlParameter = "id"
+pageNumber = "{{ :page }}"
+
+[jumbotron jumbotron2]
+jumbotron = "promotional-materials-2"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+
+[menu tabs_menu]
+start = "id-23"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Media\Models\Flyers;
+use System\Models\File;
+
+function onStart(){
+	$this['mediaFlyersList'] =  Flyers::get();
+	if(get('download')){
+		$file = File::find((int)get('download'));
+		$file_name = $file->getLocalPath();
+$recordName = get('file_name') ? get('file_name') : 'REST-COAST_flyer';
+$ext= $file->getExtension();
+
+if (file_exists($file_name)) {
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header("Content-Type: application/force-download");
+header('Content-Disposition: attachment; filename='.$recordName);
+header('Content-Transfer-Encoding: binary');
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Pragma: public');
+header('Content-Length: ' . filesize($file_name));
+ob_clean();
+flush();
+readfile($file_name);
+exit();
+}
+return Redirect::to('/media-center/flyer');
+}
+
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+
+{% set records = mediaFlyersList %}
+
+<main id="main-content" role="main" aria-labelledby="promotional-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="promotional-page-title" class="sr-only">Promotional Materials</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <section id="promotional-materials"
+             class="container-fluid page-bg"
+             role="region"
+             aria-labelledby="materials-section-heading"
+             aria-describedby="materials-section-description">
+
+        <div class="container promotional-materials-content">
+            <header>
+                <h2 id="materials-section-heading" class="sr-only">Available Promotional Materials</h2>
+                <div id="materials-section-description" class="sr-only">
+                    {% if records.count() %}
+                    Download our promotional materials including flyers, brochures, and informational documents. {{ records.count() }} materials available.
+                    {% else %}
+                    No promotional materials are currently available.
+                    {% endif %}
+                </div>
+            </header>
+
+            {% if records.count() %}
+            <div class="row materials-grid"
+                 role="list"
+                 aria-label="List of {{ records.count() }} promotional materials">
+
+                {% for record in records %}
+                <article class="col-md-4 col-xs-12 mb-1 material-item"
+                         role="listitem"
+                         aria-labelledby="material-title-{{ loop.index }}">
+
+                    <div class="flyer-container {{record.name|slug}} material-card"
+                         role="region"
+                         aria-labelledby="material-title-{{ loop.index }}"
+                         aria-describedby="material-description-{{ loop.index }}">
+
+                        <!-- Material Image -->
+                        <figure class="material-image-container">
+                            <img src="{{record.flyer_image.path}}"
+                                 alt="Preview image for {{record.name}} promotional material"
+                                 role="img"
+                                 aria-describedby="material-image-{{ loop.index }}-desc"
+                                 loading="lazy">
+                            <figcaption id="material-image-{{ loop.index }}-desc" class="sr-only">
+                                Preview of the {{record.name}} promotional material
+                            </figcaption>
+                        </figure>
+
+                        <!-- Material Information -->
+                        <header class="material-info">
+                            <h3 id="material-title-{{ loop.index }}" class="name_label material-title">
+                                {{record.name}}
+                            </h3>
+
+                            <div id="material-description-{{ loop.index }}" class="sr-only">
+                                Promotional material: {{record.name}}.
+                                {% if record.file.file_name %}
+                                File: {{ record.file.file_name }}.
+                                {% endif %}
+                                Click to download.
+                            </div>
+                        </header>
+
+                        <!-- Download Link -->
+                        <div class="material-download-container">
+                            <a href="{{ ''|page }}?{{queries}}&download={{record.file.id}}&file_name={{record.file.file_name|replace({' ': '_'})}}"
+                               class="material-download-link"
+                               aria-describedby="download-{{ loop.index }}-desc"
+                               title="Download {{record.name}}"
+                               download="{{record.file.file_name}}">
+
+                                <span class="btn btn-secondary download-button"
+                                      role="button"
+                                      aria-label="Download {{record.name}}">
+                                    Download
+                                    <span class="sr-only">({{ record.file.file_name }})</span>
+                                </span>
+                            </a>
+
+                            <span id="download-{{ loop.index }}-desc" class="sr-only">
+                                Download the promotional material "{{record.name}}"
+                                {% if record.file.file_name %}
+                                as file: {{ record.file.file_name }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <!-- Additional File Information -->
+                        <div class="material-metadata sr-only" role="complementary">
+                            {% if record.file.file_name %}
+                            File information: {{ record.file.file_name }}
+                            {% endif %}
+                            Material type: Promotional document
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <!-- Materials Summary -->
+            <footer class="materials-summary sr-only" role="contentinfo">
+                End of promotional materials section. {{ records.count() }} materials available for download.
+            </footer>
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-materials-state"
+                 role="status"
+                 aria-labelledby="no-materials-heading">
+                <h3 id="no-materials-heading">No promotional materials available</h3>
+                <p class="sr-only">
+                    There are currently no promotional materials available for download. Please check back later.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+</main>
+
+<!-- Live Region for Dynamic Announcements -->
+<div id="materials-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>
+

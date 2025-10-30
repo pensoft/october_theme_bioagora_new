@@ -1,0 +1,283 @@
+url = "/contact"
+layout = "default"
+title = "Contact"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+
+[SimpleContactFormComponent]
+templates = "template3"
+recaptcha_key = "6LcXFGQqAAAAAOv77b9E29Zo7G0i9P9fCO8tktp3"
+message_label = "Message"
+
+[jumbotron]
+jumbotron = "contact-intro"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[siteSearchInclude]
+==
+<?php
+use Pensoft\CardProfiles\Models\Profiles as Profiles;
+
+function onStart(){
+	$this['contacts'] =  Profiles::where('category_id', 2)->get();
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+<!-- Skip Links for Screen Readers -->
+
+<main id="main-content" role="main" aria-labelledby="contact-page-title">
+    <header class="page-header">
+        <h1 id="contact-page-title" class="sr-only">Contact Us</h1>
+        <div class="sr-only page-description">
+            Get in touch with our team members, use our contact form, or follow us on social media
+        </div>
+    </header>
+
+    <!-- Contact Profiles Section -->
+    <section class="container contact_profiles"
+             role="region"
+             aria-labelledby="team-profiles-heading"
+             aria-describedby="team-profiles-description">
+
+        <header>
+            <h2 id="team-profiles-heading" class="sr-only">Team Members</h2>
+            <div id="team-profiles-description" class="sr-only">
+                Meet our team members with their professional information and contact details
+            </div>
+        </header>
+
+        <div class="row" role="list" aria-label="Team member profiles">
+            {% for profile in contacts %}
+            <div class="col-md-4 col-xs-12" role="listitem">
+                <article class="contact_info row team-member-card"
+                         aria-labelledby="profile-name-{{loop.index}}">
+
+                    <!-- Profile Image -->
+                    <div class="col-md-12 col-xs-12 coordinator_image">
+                        <figure class="profile-image-container">
+                            <img src="{{profile.avatar.path}}"
+                                 class="fr-fic fr-dii profile-avatar"
+                                 alt="Professional headshot of {{profile.names}}"
+                                 role="img"
+                                 aria-describedby="profile-{{loop.index}}-context">
+                            <figcaption id="profile-{{loop.index}}-context" class="sr-only">
+                                Profile photo for {{profile.names}}{% if profile.position %}, {{profile.position}}{% endif %}
+                            </figcaption>
+                        </figure>
+                    </div>
+
+                    <!-- Profile Information -->
+                    <div class="col-md-12 col-xs-12 coordinator_info">
+                        <header class="name-position">
+                            <h3 id="profile-name-{{loop.index}}" class="profile-name">
+                                {{profile.names}}
+                                {% if profile.department %}
+                                <span class="profile-department" aria-label="Department">
+                                    , {{profile.department}}
+                                </span>
+                                {% endif %}
+                            </h3>
+
+                            {% if profile.position %}
+                            <div class="profile-position"
+                                 role="complementary"
+                                 aria-label="Job title">
+                                {{ profile.position }}
+                            </div>
+                            {% endif %}
+                        </header>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+
+            <!-- General Contact Information -->
+            <div class="col-md-4 col-xs-12" role="listitem">
+                <section class="contact_info row general-contact-card"
+                         aria-labelledby="general-contact-heading">
+
+                    <div class="col-md-12 col-xs-12 coordinator_info">
+                        <div class="contact_us_field">
+                            <header>
+                                <h3 id="general-contact-heading">General Contact</h3>
+                            </header>
+
+                            <address class="contact-address">
+                                <p>Contact us:</p>
+                                <a href="mailto:contact@bioagora.eu"
+                                   class="contact-email"
+                                   aria-describedby="email-contact-desc">
+                                    contact@bioagora.eu
+                                    <span class="sr-only">(opens email client)</span>
+                                </a>
+                                <span id="email-contact-desc" class="sr-only">
+                                    Send us an email for general inquiries and information
+                                </span>
+                            </address>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jumbotron Component -->
+    <section role="complementary" aria-label="Featured content">
+        {% component 'jumbotron' %}
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact-form"
+             class="container contact_info_felds"
+             role="region"
+             aria-labelledby="contact-form-heading"
+             aria-describedby="contact-form-description">
+
+        <div class="row middle-xs">
+            <div class="col-md-12 col-xs-12">
+                <div class="contact_form_container">
+                    <header>
+                        <h2 id="contact-form-heading" class="sr-only">Contact Form</h2>
+                        <div id="contact-form-description" class="sr-only">
+                            Fill out the form below to send us a message. Required fields are marked with an asterisk.
+                        </div>
+                    </header>
+
+                    <!-- Required Fields Notice -->
+                    <div class="form-instructions" role="complementary">
+                        <p>
+                            "<span class="red required-indicator"
+                                   role="img"
+                                   aria-label="required">*</span>" indicates required fields
+                        </p>
+                    </div>
+
+                    <!-- Contact Form Component -->
+                    <div role="form" aria-labelledby="contact-form-heading">
+                        {% component 'SimpleContactFormComponent' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <aside id="social-media"
+           class="container-fluid bg-secondary social-media-section"
+           role="complementary"
+           aria-labelledby="social-media-heading"
+           aria-describedby="social-media-description">
+
+        <div class="container social_media_contacts">
+            <header class="social-media-header">
+                <h2 id="social-media-heading" style="text-align: center;">
+                    <strong>Follow us</strong> on social media
+                </h2>
+                <div id="social-media-description" class="sr-only">
+                    Connect with us on various social media platforms for updates and news
+                </div>
+            </header>
+
+            <nav class="social-media-navigation"
+                 role="navigation"
+                 aria-label="Social media links">
+
+                <div class="social-links-container" align="center">
+                    <div class="social-media-list" role="list">
+                        {% if this.theme.twitter and this.theme.twitter_url %}
+                        <div role="listitem">
+                            <a href="{{this.theme.twitter_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="pr p-secondary p-twitter big social-link"
+                               aria-describedby="twitter-link-desc">
+                                <span class="sr-only">Follow us on Twitter</span>
+                                <span class="social-icon twitter-icon" aria-hidden="true"></span>
+                            </a>
+                            <span id="twitter-link-desc" class="sr-only">
+                                Follow BioAgora on Twitter for latest updates (opens in new window)
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if this.theme.facebook and this.theme.facebook_url %}
+                        <div role="listitem">
+                            <a href="{{this.theme.facebook_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="pr p-secondary p-facebook big social-link"
+                               aria-describedby="facebook-link-desc">
+                                <span class="sr-only">Follow us on Facebook</span>
+                                <span class="social-icon facebook-icon" aria-hidden="true"></span>
+                            </a>
+                            <span id="facebook-link-desc" class="sr-only">
+                                Follow BioAgora on Facebook for news and community updates (opens in new window)
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if this.theme.linkedin and this.theme.linkedin_url %}
+                        <div role="listitem">
+                            <a href="{{this.theme.linkedin_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="pr p-secondary p-linkedin big social-link"
+                               aria-describedby="linkedin-link-desc">
+                                <span class="sr-only">Follow us on LinkedIn</span>
+                                <span class="social-icon linkedin-icon" aria-hidden="true"></span>
+                            </a>
+                            <span id="linkedin-link-desc" class="sr-only">
+                                Connect with BioAgora on LinkedIn for professional updates (opens in new window)
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if this.theme.youtube and this.theme.youtube_url %}
+                        <div role="listitem">
+                            <a href="{{this.theme.youtube_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="pr p-secondary p-youtube big social-link"
+                               aria-describedby="youtube-link-desc">
+                                <span class="sr-only">Subscribe to our YouTube channel</span>
+                                <span class="social-icon youtube-icon" aria-hidden="true"></span>
+                            </a>
+                            <span id="youtube-link-desc" class="sr-only">
+                                Subscribe to BioAgora YouTube channel for videos and presentations (opens in new window)
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        {% if this.theme.instagram and this.theme.instagram_url %}
+                        <div role="listitem">
+                            <a href="{{this.theme.instagram_url}}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="pr p-secondary p-instagram big social-link"
+                               aria-describedby="instagram-link-desc">
+                                <span class="sr-only">Follow us on Instagram</span>
+                                <span class="social-icon instagram-icon" aria-hidden="true"></span>
+                            </a>
+                            <span id="instagram-link-desc" class="sr-only">
+                                Follow BioAgora on Instagram for visual content and stories (opens in new window)
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </aside>
+</main>
+
+<!-- Live Region for Dynamic Announcements -->
+<div id="contact-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>

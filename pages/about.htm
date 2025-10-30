@@ -1,0 +1,102 @@
+url = "/about"
+layout = "default"
+title = "About BioAgora"
+is_hidden = 0
+meta_description = "about page"
+seo_keywords = "keywords"
+robot_index = "index"
+robot_follow = "follow"
+
+[siteSearchInclude]
+
+[jumbotron jumbotron1]
+jumbotron = "about-bioagora"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron2]
+jumbotron = "about-bioagora2"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron3]
+jumbotron = "about-bioagora-3"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[menu tabs_menu]
+start = "id-2"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+==
+{% component 'siteSearchInclude' %}
+<!-- Skip Links for Screen Readers -->
+
+
+<main id="main-content" role="main" aria-labelledby="page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="page-title" class="sr-only">About BioAgora</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+    <!-- Primary Jumbotron Section -->
+    <section id="primary-content"
+             class="container primary_content"
+             role="banner"
+             aria-labelledby="primary-jumbotron-heading"
+             aria-describedby="primary-jumbotron-description">
+        <h2 id="primary-jumbotron-heading" class="sr-only">Primary Content</h2>
+        <div id="primary-jumbotron-description" class="sr-only">
+            Main featured content and primary information about BioAgora
+        </div>
+        {% component 'jumbotron1' %}
+    </section>
+
+<!--    &lt;!&ndash; Featured Content Section &ndash;&gt;-->
+<!--    <section id="featured-content"-->
+<!--             class="container-fluid about-content-wrap"-->
+<!--             role="region"-->
+<!--             aria-labelledby="featured-content-heading"-->
+<!--             aria-describedby="featured-content-description">-->
+<!--        <div class="layer">-->
+<!--            <h2 id="featured-content-heading" class="sr-only">Featured Content</h2>-->
+<!--            <div id="featured-content-description" class="sr-only">-->
+<!--                Additional featured information and highlights about our organization and mission-->
+<!--            </div>-->
+<!--            {% component 'jumbotron2' %}-->
+<!--        </div>-->
+<!--    </section>-->
+
+    <!-- Secondary Content Section -->
+    <section class="container"
+             role="complementary"
+             aria-labelledby="secondary-content-heading"
+             aria-describedby="secondary-content-description">
+        <h2 id="secondary-content-heading" class="sr-only">Additional Information</h2>
+        <div id="secondary-content-description" class="sr-only">
+            Supporting content and additional details about BioAgora's initiatives
+        </div>
+        {% component 'jumbotron3' %}
+    </section>
+
+<!--    &lt;!&ndash; Science Services Section &ndash;&gt;-->
+<!--    <section id="services-section"-->
+<!--             role="region"-->
+<!--             aria-labelledby="services-heading"-->
+<!--             aria-describedby="services-description">-->
+<!--        <h2 id="services-heading" class="sr-only">Science Services</h2>-->
+<!--        <div id="services-description" class="sr-only">-->
+<!--            Information about our scientific services, research support, and collaborative opportunities-->
+<!--        </div>-->
+<!--        {% partial 'science-service' %}-->
+<!--    </section>-->
+</main>

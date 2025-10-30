@@ -1,0 +1,137 @@
+.contact-container{
+    display: flex;
+    justify-content: center;
+}
+.profile-item{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    .contact_info {
+        box-shadow: 0px 0px 22px #C9C9C966;
+        border-radius: 6px;
+        margin-bottom: 40px;
+        padding: 17px 0 0 0;
+        width: 95%;
+        position: relative;
+
+
+        .pensoft_logo{
+            position: absolute;
+            content: ' ';
+            background: url("../../assets/images/pensoft-logo-black.svg") no-repeat;
+            width: 96px;
+            height: 20px;
+            top: 17px;
+            right: 20px;
+            .breakpoint-large-down({
+                position: relative;
+                content: '';
+                top: unset;
+                right: 6px;
+                display: block;
+                margin: 0 auto 20px auto;
+            });
+        }
+        .email_container {
+            background: @link-color;
+            border-radius: 0px 0px 6px 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4px 0;
+            .contact_mail {
+                text-align: center;
+                font-size: 18px;
+                a{
+                    display: flex;
+                    align-items: center;
+                    color: @white-color !important;
+                    &:hover{
+                        opacity: 0.5;
+                    }
+                    i{
+                        margin-right: 16px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    i:before{
+                        content: '' !important;
+                        position: absolute;
+                        display: inline-block;
+                        background: url("../../assets/images/email-svgrepo-com (2).svg") center center no-repeat;
+                        background-size: 20px;
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        }
+        .coordinator_image{
+            .breakpoint-large-down({
+                margin-bottom: 6px;
+                display: flex;
+                justify-content: center;
+            });
+            img{
+                border-radius: 4px;
+                object-fit: cover;
+                width: 137px;
+                height: 137px;
+                margin-left: 10px;
+                margin-bottom: 10px;
+                margin-right: 20px;
+            }
+        }
+        .coordinator_info{
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            h3{
+                font-size: 20px !important;
+                //color: #004D74 !important;
+                display: flex;
+                justify-content: start;
+                padding: 0;
+                margin: 0;
+                .breakpoint-large-down({
+                    margin-bottom: 6px;
+                    display: flex;
+                    justify-content: center;
+                });
+            }
+            .profile-position{
+                color: #858585;
+                font-size: 18px;
+                font-weight: 200;
+                .breakpoint-large-down({
+                    text-align: center;
+                    margin-bottom: 20px;
+                });
+            }
+            .profile-affiliation{
+                color: #858585;
+                font-size: 16px;
+                line-height: 1.3em;
+                margin-top: 33px;
+                .breakpoint-large-down({
+                    margin-top: 33px;
+                    margin-bottom: 40px;
+                    text-align: center;
+                });
+            }
+            h3{
+                font-size: 20px;
+                color: #535353;
+                font-weight: bold;
+            }
+        }
+
+        .breakpoint-large-down({
+            width: 100%;
+        });
+    }
+}
+

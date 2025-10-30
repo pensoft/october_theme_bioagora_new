@@ -1,0 +1,422 @@
+url = "/knowledge-requests"
+layout = "default"
+title = "Knowledge Requests"
+
+[siteSearchInclude]
+
+[jumbotron about_ken]
+jumbotron = "about-ken"
+title = 1
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[menu tabs_menu]
+start = "id-6"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 1
+==
+<?php
+use Pensoft\Networks\Models\Data as Kens;
+use Pensoft\Articles\Models\Article;
+use Pensoft\Articles\Models\Category;
+use Pensoft\Requests\Models\Request;
+use Pensoft\Cardprofiles\Models\Profiles;
+use Pensoft\Partners\Models\Partners;
+use System\Models\File;
+
+function onStart(){
+    $this['items'] = Request::get();
+    $this['news'] = Article::news()->whereHas('categories', function ($query) {
+$query->where('id', 1); //TODO 16
+})->where('published_at', '<=', 'now')
+->where('published', 'true')
+->orderBy('published_at', 'DESC')
+->take(4)
+->get();
+
+
+if(get('download')){
+    $file = File::find((int)get('download'));
+    $file_name = $file->getLocalPath();
+    $recordName = get('file_name') ? get('file_name') : 'REST-COAST_flyer';
+    $ext= $file->getExtension();
+
+    if (file_exists($file_name)) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header("Content-Type: application/force-download");
+        header('Content-Disposition: attachment; filename='.$recordName .'.'. $ext);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($file_name));
+        ob_clean();
+        flush();
+        readfile($file_name);
+        exit();
+    }
+    return Redirect::to('/knowledge-request');
+}
+
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main" aria-labelledby="ken-list-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-xs-12">
+                <div class="category-tabs">
+                    {% component 'tabs_menu' %}
+                </div>
+            </div>
+            <div class="col-md-9 col-xs-12">
+                <!-- About KEN Section -->
+                <section class="about_ken mb-4" aria-labelledby="about-ken-heading">
+                    <h1 id="ken-list-title" class="sr-only">About Knowledge Request</h1>
+                    {% component 'about_ken' %}
+                </section>
+
+                <!-- KEN List Section -->
+                <section class="mt-4 mb-4" aria-labelledby="ken-list-heading">
+                    <h2 id="ken-list-heading">List of Urgent Knowledge Requests</h2>
+
+                    <div class="row" role="list" aria-label="List of active Knowledge Exchange Networks">
+                        {% for record in items %}
+                        <article class="col-md-6 col-xs-12 case" role="listitem">
+                            <div class="ken_item">
+                                <header class="info_container">
+                                        <div class="title_container">
+                                            <h3>
+                                                {{record.title}}
+                                            </h3>
+                                            <div class="requester">Requester: <strong>{{record.requester}}</strong></div>
+                                        </div>
+
+                                        <a data-toggle="modal" href="#request-{{record.id}}"
+                                           class="btn btn-primary"
+                                           data-target="#request-{{record.id}}"
+                                           aria-describedby="request-{{record.id}}-desc"
+                                           aria-haspopup="dialog"
+                                        >Read more</a>
+
+                                        <div class="control-popup modal fade" id="request-{{record.id}}" role="dialog"
+                                             aria-labelledby="modal-title-{{record.id}}"
+                                             aria-describedby="modal-description-{{record.id}}"
+                                             aria-modal="true"
+                                             aria-hidden="true"
+                                             tabindex="-1">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-body" id="modal-description-{{record.id}}">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+
+                                                        <!-- label -->
+                                                        <section class="label" aria-labelledby="label-heading-{{record.id}}">
+                                                            {% if record.label %}
+                                                                {{ record.label }}
+                                                            {% else %}
+                                                                REQUEST
+                                                            {% endif %}
+                                                        </section>
+
+                                                        <!-- title -->
+                                                        <section aria-labelledby="title-heading-{{record.id}}">
+                                                            <h2 id="title-heading-{{record.id}}">
+                                                                {{ record.title }}
+                                                            </h2>
+                                                        </section>
+
+                                                        <!-- Description -->
+                                                        <section class="request-description"
+                                                                 aria-labelledby="description-heading-{{record.id}}">
+                                                            <h3 id="description-heading-{{record.id}}" class="sr-only">
+                                                                Description
+                                                            </h3>
+                                                            <div class="description-content" role="document">
+                                                                {{record.description|raw}}
+                                                            </div>
+                                                        </section>
+
+
+                                                        <section class="bottom_border"
+                                                                 aria-labelledby="date-heading-{{record.id}}">
+                                                            <h3 id="date-heading-{{record.id}}" class="sr-only">
+                                                                End date
+                                                            </h3>
+                                                            <div class="item">End date</div>
+                                                            <div class="value"> {{record.end_date | date('F, Y')}}</div>
+
+                                                        </section>
+
+
+                                                        <section class="bottom_border"
+                                                                 aria-labelledby="requester-heading-{{record.id}}">
+                                                            <h3 id="requester-heading-{{record.id}}" class="sr-only">
+                                                                Requester
+                                                            </h3>
+                                                            <div class="item">Requester</div>
+                                                            <div class="value"> {{record.requester}}</div>
+
+                                                        </section>
+
+
+                                                        {% if record.partner.count  > 0 %}
+                                                        <section aria-labelledby="partner-name" class="services_accordion_item">
+                                                            <header aria-controls="partner-content-1" aria-expanded="false" class="row middle-xs accordion-toggle service-toggle" data-target="#service-content-1" data-toggle="collapse" tabindex="0">
+                                                                <div class="col-xs start-xs">
+                                                                    <div class="partner-name">List of affiliated experts / institutions</div></div>
+                                                                <div aria-hidden="true" class="col-xs-2 end-xs plusminus expand-indicator"><span class="plus">&nbsp;</span></div>
+                                                            </header>
+                                                            <div aria-hidden="true" class="accordion-content" style="display: none;">
+                                                                {% for partner in record.partner %}
+                                                                <div class="partner_item">
+                                                                    <a href="{{partner.instituion_url}}" title="{{ partner.instituion }}" aria-label="Open the {{ partner.instituion }} website (opens in new tab)" target="_blank"><img alt="{{ partner.instituion }}" src="{{partner.cover.getThumb(158, auto, { mode : 'crop' } )}}"></a>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </section>
+                                                        {% endif %}
+
+
+                                                        {% if record.kens.count  > 0 %}
+                                                        <section aria-labelledby="ken-name" class="services_accordion_item">
+                                                            <header aria-controls="ken-content-1" aria-expanded="false" class="row middle-xs accordion-toggle service-toggle" data-target="#service-content-1" data-toggle="collapse" tabindex="0">
+                                                                <div class="col-xs start-xs">
+                                                                    <div class="ken-name">Knowledge Exchange Network</div></div>
+                                                                <div aria-hidden="true" class="col-xs-2 end-xs plusminus expand-indicator"><span class="plus">&nbsp;</span></div>
+                                                            </header>
+                                                            <div aria-hidden="true" class="accordion-content" style="display: none;">
+                                                                {% for ken in record.kens %}
+                                                                    <div class="ken_list_item">
+                                                                        <div class="ken_container" href="/knowledge-exchange-networks-new" aria-label="Opens KEN listing page">
+                                                                            {% if ken.about_image %}
+                                                                            <img alt="{{ken.title}}" src="{{ken.about_image.getThumb(242, 124, { mode : 'crop' } )}}">
+                                                                            {% else %}
+                                                                            <img alt="{{ken.title}}" src="{{this.theme.header_image.getPath()}}">
+                                                                            {% endif %}
+                                                                            <div class="ken_title">{{ken.title}}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </section>
+                                                        {% endif %}
+
+
+                                                        {% if record.profile.count  > 0 %}
+                                                        <section aria-labelledby="person-name" class="services_accordion_item">
+                                                            <header aria-controls="person-content-1" aria-expanded="false" class="row middle-xs accordion-toggle service-toggle" data-target="#service-content-1" data-toggle="collapse" tabindex="0">
+                                                                <div class="col-xs start-xs">
+                                                                    <div class="person-name">Affiliated Focal Points</div></div>
+                                                                <div aria-hidden="true" class="col-xs-2 end-xs plusminus expand-indicator"><span class="plus">&nbsp;</span></div>
+                                                            </header>
+                                                            <div aria-hidden="true" class="accordion-content" style="display: none;">
+                                                                <div class="team-members-list"
+                                                                     role="list"
+                                                                     aria-label="Team members">
+                                                                    {% for profile in record.profile %}
+                                                                    <article class="row member-item team-member"
+                                                                             role="listitem"
+                                                                             aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}">
+
+                                                                        <!-- Team Member Avatar -->
+                                                                        <div class="col-md-2 col-xs-12 member-avatar-section">
+                                                                            <figure class="avatar-container">
+                                                                                {% if profile.avatar %}
+                                                                                <img class="img-fluid member-avatar"
+                                                                                     src="{{ profile.avatar|crop_image }}"
+                                                                                     alt="Professional photo of {{ profile.names }}"
+                                                                                     role="img"
+                                                                                     aria-describedby="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc">
+                                                                                {% else %}
+                                                                                <img class="img-fluid member-avatar"
+                                                                                     src="{{ 'profile-image-placeholder.png'|media }}"
+                                                                                     alt="Default profile image for {{ profile.names }}"
+                                                                                     role="img"
+                                                                                     aria-describedby="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc">
+                                                                                {% endif %}
+                                                                                <figcaption id="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
+                                                                                    Profile image for {{ profile.names }} from {{ partner.instituion }}
+                                                                                </figcaption>
+                                                                            </figure>
+                                                                        </div>
+
+                                                                        <!-- Team Member Details -->
+                                                                        <div class="col-md-10 col-xs-12 member-info-section">
+                                                                            <div class="member-details">
+                                                                                <header class="member-header">
+                                                                                    <h4 id="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                                                        class="member-name">
+                                                                                        {{ profile.names }}
+                                                                                    </h4>
+
+                                                                                    <!-- Member context -->
+                                                                                    <div class="sr-only member-context">
+                                                                                        Team member from {{ partner.instituion }}, {{ partner.country[0].name }}
+                                                                                    </div>
+                                                                                </header>
+
+                                                                                <!-- Hidden Biography Content -->
+                                                                                <div class="body member-biography"
+                                                                                     id="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                                                     role="region"
+                                                                                     aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                                                     aria-hidden="true"
+                                                                                     style="display: none;">
+                                                                                    <div class="sr-only">Biography for {{ profile.names }}:</div>
+                                                                                    {{ profile.content | raw }}
+                                                                                </div>
+
+                                                                                <!-- Biography Toggle Button -->
+                                                                                <p class="read-more-bio biography-toggle"
+                                                                                   aria-expanded="false"
+                                                                                   aria-controls="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                                                                   aria-describedby="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc"
+                                                                                   onclick="expandBiography(this);">Read biography</p>
+
+                                                                                <span id="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
+                                        Click to read the full biography of {{ profile.names }}
+                                    </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </article>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </section>
+                                                        {% endif %}
+
+                                                        {% if record.files.count  > 0 %}
+                                                        <section aria-labelledby="file-name" class="services_accordion_item">
+                                                            <header aria-controls="file-content-1" aria-expanded="false" class="row middle-xs accordion-toggle service-toggle" data-target="#service-content-1" data-toggle="collapse" tabindex="0">
+                                                                <div class="col-xs start-xs">
+                                                                    <div class="file-name">Relevant documents</div></div>
+                                                                <div aria-hidden="true" class="col-xs-2 end-xs plusminus expand-indicator"><span class="plus">&nbsp;</span></div>
+                                                            </header>
+                                                            <div aria-hidden="true" class="accordion-content" style="display: none;">
+                                                                <!-- Publications and Documents Section -->
+                                                                {% if record.files.count > 0 %}
+                                                                    <div class="files-list" role="list" aria-label="List of publications and documents">
+                                                                        {% for file in record.files %}
+                                                                        <div class="row file_item" role="listitem">
+                                                                            <div class="col-md-10 col-xs-12 file_name">
+                                                                            <span class="file-icon" aria-hidden="true">
+                                                                                {% if file.extension == 'docx' or file.extension == 'doc' %}
+                                                                                <i class="files_doc" aria-label="Word document"></i>
+                                                                                {% elseif file.extension == 'pdf' %}
+                                                                                <i class="files_pdf" aria-label="PDF document"></i>
+                                                                                {% else %}
+                                                                                <i class="files_file" aria-label="File"></i>
+                                                                                {% endif %}
+                                                                            </span>
+                                                                                <span class="file-name-text">{% if file.title %}{{file.title}}{% else %} {{file.file_name}} {% endif %}</span>
+                                                                                <span class="sr-only">File type: {{ file.extension|upper }}</span>
+                                                                            </div>
+                                                                            <div class="col-md-2 col-xs-12 end-md center-xs">
+                                                                                <a href="{{ ''|page }}?{{queries}}&download={{file.id}}&file_name={{file.file_name|replace({' ': '_'})}}"
+                                                                                   class="download-link"
+                                                                                   aria-describedby="download-{{file.id}}-desc"
+                                                                                   download="{{file.file_name}}">
+                                                                                    Download
+                                                                                    <span class="sr-only">({{ file.extension|upper }} file)</span>
+                                                                                </a>
+                                                                                <span id="download-{{file.id}}-desc" class="sr-only">
+                                                                                    Download {{ file.file_name }}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </section>
+                                                        {% endif %}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                </header>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- News Section -->
+                {% if news.count > 0 %}
+                <section class=" newslist-records news"
+                         id="newslist-records"
+                         aria-labelledby="general-news-heading">
+                    <h2 id="general-news-heading" class="display-1">News</h2>
+
+                    <div class="row newslist" role="list" aria-label="Latest news articles">
+                        {% for highlight in news %}
+                        <article class="col-xs-12 col-md-6 news-item item-{{highlight.slug}}" role="listitem">
+                            <div class="row news_column">
+                                <div class="news-image col-xs-12 center-xs">
+                                    <a href="{{'news'|page}}/{{highlight.slug}}"
+                                       aria-describedby="general-news-{{highlight.slug}}-desc">
+                                        {% if highlight.cover %}
+                                        <img class="news-img-top"
+                                             src="{{highlight.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                                             alt="Cover image for {{ highlight.title }}"
+                                             loading="lazy">
+                                        {% else %}
+                                        <img class="news-img-top"
+                                             src="{{'pensoft/No_Image_Available.jpg'|media }}"
+                                             alt="No image available for {{ highlight.title }}"
+                                             style="height: 212px; width: 370px;"
+                                             loading="lazy">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="news-container col-xs-12">
+                                    <time class="text-published"
+                                          datetime="{{ highlight.published_at|date('c') }}"
+                                          aria-label="Published on">
+                                        {{ highlight.published_at|date("d M Y") }}
+                                    </time>
+                                    <div class="news-title">
+                                        <h3 class="card-title">
+                                            <a href="{{'news'|page}}/{{highlight.slug}}"
+                                               id="general-news-{{highlight.slug}}-desc">
+                                                {{ highlight.title|length > 99 ? highlight.title|slice(0, 99) ~ '...' : highlight.title }}
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <a href="{{'news'|page}}/{{highlight.slug}}"
+                                               class="btn btn-primary"
+                                               aria-describedby="read-general-article-{{highlight.slug}}-desc">
+                                                {{'Read article'|_}}
+                                            </a>
+                                            <span id="read-general-article-{{highlight.slug}}-desc" class="sr-only">
+                                    Read full article: {{ highlight.title }}
+                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</main>

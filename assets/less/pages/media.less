@@ -1,0 +1,111 @@
+.promotional-materials{
+
+
+    img {
+        width: auto;
+    }
+    h3{
+        font-size: 24px;
+        font-weight: 300;
+        min-height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+    }
+
+
+}
+
+
+.promotional-materials-content{
+
+
+    //img {
+    //    width: auto;
+    //}
+    //h3{
+    //    font-size: 24px;
+    //    font-weight: 300;
+    //    min-height: 70px;
+    //    display: flex;
+    //    align-items: center;
+    //    justify-content: center;
+    //    margin: 20px auto;
+    //}
+
+    .flyer-container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border: none;
+        outline: none;
+        background: none;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        border-radius: 10px;
+        transition: all 0.3s ease-in-out;
+
+        img{
+            width: 609px;
+            height: 409px;
+            object-fit: cover;
+            max-width: 100%;
+            border-radius: 10px;
+            -webkit-transition: all 0.5s ease; /* Safari and Chrome */
+            -moz-transition: all 0.5s ease; /* Firefox */
+            -ms-transition: all 0.5s ease; /* IE 9 */
+            -o-transition: all 0.5s ease; /* Opera */
+            transition: all 0.5s ease;
+            //&:hover{
+            //    -webkit-transform:scale(1.2); /* Safari and Chrome */
+            //    -moz-transform:scale(1.2); /* Firefox */
+            //    -ms-transform:scale(1.2); /* IE 9 */
+            //    -o-transform:scale(1.2); /* Opera */
+            //    transform:scale(1.2);
+            //}
+        }
+        .name_label{
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-size: 23px;
+            transition: all 0.3s ease-in-out;
+            font-weight: 500;
+            min-height: unset;
+            margin: 0;
+        }
+
+        .btn.btn-secondary{
+            display: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        &:hover{
+            .name_label{
+                display: none;
+            }
+            .btn.btn-secondary{
+                position: absolute;
+                display: block;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #00bda7 url("../../assets/images/download-icon.svg") no-repeat;
+                background-position: left 20px center;
+                background-size: 12px;
+                padding-left: 40px;
+                border: 1px solid #00bda7;
+            }
+        }
+
+    }
+
+
+}
+
+
+

@@ -1,0 +1,146 @@
+url = "/events-news/:slug?|[a-zA-Z\-0-9]"
+layout = "default"
+title = "Events"
+is_hidden = 0
+robot_index = "index"
+robot_follow = "follow"
+
+[calendar]
+default = "true"
+limit = "null"
+category = "null"
+language = "en"
+redirect_to_detailed_page = "false"
+default_view = "dayGridMonth"
+
+[jumbotron jumbotron1]
+jumbotron = "you-will-find-page-all-past-and-future-public-events-and-webinars"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+<?php
+use Pensoft\Calendar\Models\Entry;
+use Carbon\Carbon;
+use Pensoft\Articles\Models\Category;
+use Pensoft\Articles\Models\Article;
+
+function onStart(){
+
+
+        $categoryId = 1;
+        $this['events_articles'] = Article::news()->whereHas('categories', function ($query) use ($categoryId) {
+$query->where('id', $categoryId);
+})->where('published_at', '<=', 'now')
+->where('published', 'true')
+->orderBy('published_at', 'DESC')->get();
+
+
+$this['page_url'] = $this->pageUrl('');
+
+$entries = Entry::where('end', '>=', Carbon::now())
+->orderBy('start', 'asc')
+->get();
+
+$groupedEntries = [];
+
+foreach ($entries as $entry) {
+$monthYear = Carbon::parse($entry->start)->format('F Y');
+
+if (!isset($groupedEntries[$monthYear])) {
+$groupedEntries[$monthYear] = [];
+}
+
+$groupedEntries[$monthYear][] = $entry;
+}
+
+$this['groupedEntries'] = $groupedEntries;
+
+
+$this['past_entries'] = Entry::where('end', '<', Carbon::now())->orderBy('start', 'desc')->get();
+
+$this['slug'] = $this->param('slug');
+
+$monthsWithEntries = Entry::selectRaw('EXTRACT(YEAR FROM start) as year, EXTRACT(MONTH FROM start) as month')
+->where('end', '>=', Carbon::now())
+->groupBy(DB::raw('EXTRACT(YEAR FROM start), EXTRACT(MONTH FROM start)'))
+->orderBy('year', 'asc')
+->orderBy('month', 'asc')
+->get();
+
+$formattedMonths = $monthsWithEntries->map(function ($entry) {
+return Carbon::createFromDate($entry->year, $entry->month, 1)->format('F Y');
+})->toArray();
+
+$this['monthsWithEntries'] = $formattedMonths;
+
+}
+?>
+==
+<div class="container-fluid events">
+    {% component 'jumbotron1' %}
+    <!--<div class="container events-container">
+        {% if groupedEntries %}
+        <div class="listView" id="listView">
+
+            {% for month, events in groupedEntries %}
+                <h2 class="month-year-header">{{ month }}</h2>
+                <div class="month-events">
+                    {% for entry in events %}
+                    <div class="event-item">
+                        {# Add 'featured-event' class if the event is featured #}
+                        <div class="row entry_item middle-xs {% if entry.identifier == 2 %} featured-event {% endif %}">
+                            <div class="col-md-1 col-xs-12 date_container">
+                                <div class="date_day">
+                                    <span class="date-start">{{ entry.start|date("j") }}{% if entry.end and entry.start|date("j") != entry.end|date("j") %} <span class="date-seperator"> - </span> {% endif %} </span>
+                                    {% if entry.end and entry.start|date("j") != entry.end|date("j") %}
+                                        <span class="date-end">{{ entry.end|date("j M") }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="date_month">
+                                    {{ entry.start|date("M") }}
+                                </div>
+                            </div>
+                            <div class="col-md-11 col-xs-12 body_container">
+                                {% if entry.identifier == 2 %}
+                                    <div class="featured-label">Featured</div>
+                                {% endif %}
+                                <div class="date_week">
+                                    {{ entry.title|raw }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body-content" style="display: none;">
+                            {{ entry.description|raw }}
+                            <div class="toggle-back"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+        </div>
+
+        {% if entries.count > 20 %}
+        <div class="row container">
+            {{ entries.fragment('listView').render|raw }}
+        </div>
+        {% endif %}
+
+
+        {% endif %}
+    </div>-->
+
+
+
+    <div class="container news ">
+        <!--<h2 style="text-align: center;">Our <b>events articles</b></h2>-->
+        <div class="newslist-records">
+            {% partial 'components/newslist-records' records=events_articles %}
+        </div>
+    </div>
+
+
+    {% partial 'events-bulletin' %}
+
+</div>

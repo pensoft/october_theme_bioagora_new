@@ -1,0 +1,121 @@
+title = "FAQs"
+layout = "default"
+url = "/faqs"
+
+
+
+[menu tabs_menu]
+start = "id-2"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+
+[siteSearchInclude]
+==
+<?php
+use Pensoft\Accordions\Models\Item;
+
+function onStart(){
+	$this['faqs'] =  Item::where('category_id', 2)->get();
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main" aria-labelledby="faq-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="faq-page-title" class="sr-only">Frequently Asked Questions</h1>
+
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+
+    <section id="faq-accordion"
+             class="container800 mb-4"
+             role="region"
+             aria-labelledby="faq-section-heading"
+             aria-describedby="faq-instructions">
+
+        <header>
+            <h2 id="faq-section-heading" class="sr-only">FAQ Accordion</h2>
+            <div id="faq-instructions" class="sr-only">
+                Navigate through frequently asked questions using the accordion below. Use Enter or Space to expand or collapse sections. Use Tab to move between questions.
+            </div>
+        </header>
+
+        <div class="faq-list"
+             role="list"
+             aria-label="List of {{ faqs|length }} frequently asked questions">
+
+            {% for item in faqs %}
+            <div class="faqs_list team_container accordion-item"
+                 id="{{ item.title|slug }}"
+                 role="listitem"
+                 aria-labelledby="faq-question-{{ loop.index }}">
+
+                <!-- FAQ Question/Toggle Button -->
+                <header class="row middle-xs accordion-toggle"
+                        role="button"
+                        tabindex="0"
+                        aria-expanded="false"
+                        aria-controls="faq-content-{{ loop.index }}"
+                        data-toggle="collapse"
+                        data-target="#faq-content-{{ loop.index }}">
+
+                    <div class="col-xs start-xs">
+                        <h3 id="faq-question-{{ loop.index }}" class="faq-question-title">
+                            {{ item.title }}
+                        </h3>
+                    </div>
+
+                    <div class="col-xs-2 end-xs plusminus" aria-hidden="true">
+                        <span class="plus" aria-hidden="true"></span>
+                        <span class="sr-only expand-text">Click to expand answer</span>
+                        <span class="sr-only collapse-text" style="display: none;">Click to collapse answer</span>
+                    </div>
+
+                    <!-- Screen reader instructions for this specific item -->
+                    <span class="sr-only toggle-instructions">
+                        Press Enter or Space to {{ item.title }} answer section
+                    </span>
+                </header>
+
+                <!-- FAQ Answer Content -->
+                <div id="faq-content-{{ loop.index }}"
+                     class="accordion-content faq-answer"
+                     role="region"
+                     aria-labelledby="faq-question-{{ loop.index }}"
+                     aria-hidden="true"
+                     style="display: none;">
+
+                    <div class="row member-item" role="document">
+                        <!-- Content introduction for screen readers -->
+                        <div class="sr-only">Answer to: {{ item.title }}</div>
+                        {{ item.body|raw }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- FAQ Summary for Screen Readers -->
+        <footer class="sr-only" role="contentinfo">
+            End of FAQ section. {{ faqs|length }} questions and answers available.
+        </footer>
+    </section>
+</main>
+
+<!-- Live Region for Accordion State Announcements -->
+<div id="faq-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>

@@ -1,0 +1,240 @@
+url = "/biodiversity-knowledge-agora"
+layout = "default"
+title = "Biodiversity Knowledge Agora"
+
+[jumbotron]
+jumbotron = "biodiversity-knowledge-agora"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[siteSearchInclude]
+
+[jumbotron jumbotron2]
+jumbotron = "why-should-you-join-biodiversity-knowledge-agora"
+title = 0
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron3]
+jumbotron = "join-biodiversity-knowledge-agora"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron4]
+jumbotron = "explore-other-ways-get-involved-bioagora"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[menu tabs_menu]
+start = "id-6"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 1
+
+==
+{% component 'siteSearchInclude' %}
+
+
+<!-- Skip Links for Screen Readers -->
+
+
+<main id="main-content" role="main" aria-labelledby="page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="page-title" class="sr-only">Biodiversity Knowledge Agora</h1>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-xs-12">
+                <div class="category-tabs">
+                    {% component 'tabs_menu' %}
+                </div>
+            </div>
+            <div class="col-md-9 col-xs-12">
+
+
+                {% component 'jumbotron' %}
+                <!-- Primary Content Section -->
+                <section id="primary-content"
+                         role="banner"
+                         aria-labelledby="primary-content-heading"
+                         aria-describedby="primary-content-description">
+                    <h2 id="primary-content-heading" class="sr-only">Featured Content</h2>
+                    <div id="primary-content-description" class="sr-only">
+                        Main featured information about the Biodiversity Knowledge Agora initiative
+                    </div>
+                    {% component 'jumbotron2' %}
+                </section>
+
+
+
+                <!-- Science Services Section -->
+                <section id="services-content"
+                         class="container-fluid science_service_container"
+                         role="region"
+                         aria-labelledby="services-heading"
+                         aria-describedby="services-description">
+                    <h2 id="services-heading" class="sr-only">Science Services</h2>
+                    <div id="services-description" class="sr-only">
+                        Information about our scientific services, research support, and biodiversity knowledge resources
+                    </div>
+                    {% component 'jumbotron3' %}
+                </section>
+
+                <!-- Additional Services Section -->
+                <section id="additional-services"
+                         class="container-fluid science_service_container"
+                         role="complementary"
+                         aria-labelledby="additional-services-heading"
+                         aria-describedby="additional-services-description">
+                    <h2 id="additional-services-heading" class="sr-only">Additional Services</h2>
+                    <div id="additional-services-description" class="sr-only">
+                        Extended services and additional resources for biodiversity research and knowledge sharing
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <section id="explore"
+             class="container-fluid bg-secondary explore_join_container"
+             role="region"
+             aria-labelledby="explore-heading"
+             aria-describedby="explore-description">
+        <div class="row">
+            <div class="col-md-4 col-xs-12">
+                <div class="join">
+                    <span>Register for the Biodiversity Knowledge Agora</span>
+                    <a href="" class="btn learn-more-green">Learn more</a>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="explore">
+                    <span>Participate in knowledge exchange networks to gather expertise about the needs of the community</span>
+                    <a href="" class="btn learn-more-green">Learn more</a>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="explore_k">
+                    <span>Contribute to policy requests for knowledge</span>
+                    <a href="" class="btn learn-more-green">Learn more</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</main>
+
+
+
+<script>
+    $(document).ready(function() {
+
+        // Initialize nectar scrolling tabs
+        function initNectarScrollingTabs() {
+            const $nav = $('.nectar-scrolling-tabs');
+            const $navItems = $nav.find('li');
+            const $links = $nav.find('a');
+            const sections = [];
+
+            // Collect all sections
+            $links.each(function() {
+                const target = $(this).attr('href');
+                if ($(target).length) {
+                    sections.push(target);
+                }
+            });
+
+            // Smooth scroll on click
+            $links.on('click', function(e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                const $target = $(target);
+                const windowHeight = $(window).height();
+                const targetHeight = $target.outerHeight();
+
+                // Center the section in viewport if it's smaller than viewport
+                let scrollTo = $target.offset().top;
+                if (targetHeight < windowHeight) {
+                    scrollTo = $target.offset().top - ((windowHeight - targetHeight) / 2);
+                }
+
+                $('html, body').animate({
+                    scrollTop: scrollTo
+                }, 800, 'swing');
+            });
+
+            // Update active link on scroll
+            function updateActiveLink() {
+                const scrollPos = $(window).scrollTop();
+                const windowHeight = $(window).height();
+                const windowCenter = scrollPos + (windowHeight / 2);
+                const docHeight = $(document).height();
+                const winHeight = $(window).height();
+
+                // Get first and last section positions
+                const firstSection = $(sections[0]);
+                const lastSection = $(sections[sections.length - 1]);
+                const firstSectionTop = firstSection.offset().top;
+                const lastSectionBottom = lastSection.offset().top + lastSection.outerHeight();
+
+                // Fade out navigation with 100px buffer zones
+                // Show 100px before section 1, hide 100px after section 5
+                if (scrollPos + windowHeight < firstSectionTop + (windowHeight / 2)  || scrollPos > lastSectionBottom - (windowHeight / 2)) {
+                    $nav.addClass('fade-out');
+                } else {
+                    $nav.removeClass('fade-out');
+                }
+
+                // Find current section (when center of viewport is in section)
+                let currentSection = '';
+
+                sections.forEach(function(section) {
+                    const $section = $(section);
+                    const sectionTop = $section.offset().top;
+                    const sectionBottom = sectionTop + $section.outerHeight();
+
+                    if (windowCenter >= sectionTop && windowCenter < sectionBottom) {
+                        currentSection = section;
+                    }
+                });
+
+                // Update active class with smooth transition
+                if (currentSection) {
+                    const $currentItem = $links.filter('[href="' + currentSection + '"]').parent();
+
+                    if (!$currentItem.hasClass('active')) {
+                        // Remove active from all
+                        $navItems.removeClass('active');
+
+                        // Add active to current with delay for smooth transition
+                        setTimeout(function() {
+                            $currentItem.addClass('active');
+                        }, 100);
+                    }
+                }
+            }
+
+            // Listen to scroll with throttle
+            let scrollTimeout;
+            $(window).on('scroll', function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(updateActiveLink, 10);
+            });
+
+            // Initial check
+            updateActiveLink();
+        }
+
+        // Initialize on page load
+        initNectarScrollingTabs();
+
+    });
+</script>

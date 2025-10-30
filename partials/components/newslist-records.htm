@@ -1,0 +1,188 @@
+{% if records.count > 0 %}
+<!-- News Articles Section -->
+<section class="news-articles-container"
+         role="region"
+         aria-labelledby="news-articles-heading"
+         aria-describedby="news-articles-description">
+
+    <h2 id="news-articles-heading" class="sr-only">News Articles</h2>
+    <div id="news-articles-description" class="sr-only">
+        List of {{ records.count }} news articles with images, publication dates, and sharing options
+    </div>
+
+    <div class="row newslist"
+         role="list"
+         aria-label="News articles list">
+
+        {% for highlight in records %}
+        <article class="col-xs-12 col-md-4 news-item item-{{highlight.slug}}"
+                 role="listitem"
+                 aria-labelledby="article-title-{{highlight.slug}}">
+
+            <div class="row news_column">
+                <!-- Article Image -->
+                <div class="news-image col-xs-12 center-xs">
+                    <a href="{{'news'|page}}/{{highlight.slug}}"
+                       aria-describedby="article-image-{{highlight.slug}}-desc"
+                       tabindex="0">
+                        {% if highlight.cover %}
+                        <img class="news-img-top"
+                             src="{{highlight.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                             alt="Cover image for article: {{ highlight.title }}"
+                             role="img"
+                             loading="lazy"
+                             width="370"
+                             height="212">
+                        {% else %}
+                        <img class="news-img-top"
+                             src="{{'pensoft/No_Image_Available.jpg'|media }}"
+                             alt="No image available for article: {{ highlight.title }}"
+                             role="img"
+                             loading="lazy"
+                             style="height: 212px; width: 370px;"
+                             width="370"
+                             height="212">
+                        {% endif %}
+                    </a>
+                    <span id="article-image-{{highlight.slug}}-desc" class="sr-only">
+                        View full article: {{ highlight.title }}
+                    </span>
+                </div>
+
+                <!-- Article Content -->
+                <div class="news-container col-xs-12">
+                    <!-- Publication Date -->
+                    <time class="text-published"
+                          datetime="{{ highlight.published_at|date('c') }}"
+                          aria-label="Published on">
+                        {{ highlight.published_at|date("d M Y") }}
+                    </time>
+
+                    <!-- Article Title -->
+                    <header class="news-title">
+                        <h3 class="card-title" id="article-title-{{highlight.slug}}">
+                            <a href="{{'news'|page}}/{{highlight.slug}}"
+                               aria-describedby="article-context-{{highlight.slug}}">
+                                {{ highlight.title|length > 99 ? highlight.title|slice(0, 99) ~ '...' : highlight.title }}
+                                {% if highlight.title|length > 99 %}
+                                <span class="sr-only"> (title truncated)</span>
+                                {% endif %}
+                            </a>
+                        </h3>
+                        <span id="article-context-{{highlight.slug}}" class="sr-only">
+                            Published {{ highlight.published_at|date("d M Y") }}. Click to read full article.
+                        </span>
+                    </header>
+
+                    <!-- Action and Sharing Row -->
+                    <div class="row article-actions" role="group" aria-label="Article actions">
+                        <!-- Read Article Button -->
+                        <div class="col-xs-6">
+                            <a href="{{'news'|page}}/{{highlight.slug}}"
+                               class="btn btn-primary read-article-btn"
+                               aria-describedby="read-article-{{highlight.slug}}-desc">
+                                {{'Read article'|_}}
+                            </a>
+                            <span id="read-article-{{highlight.slug}}-desc" class="sr-only">
+                                Read the full article: {{ highlight.title }}
+                            </span>
+                        </div>
+
+                        <!-- Social Sharing -->
+                        <div class="col-xs-6">
+                            {% if allow_share == 'yes' %}
+                            <nav class="social-sharing"
+                                 aria-labelledby="share-{{highlight.slug}}-heading"
+                                 role="navigation">
+                                <h4 id="share-{{highlight.slug}}-heading" class="sr-only">
+                                    Share {{ highlight.title }}
+                                </h4>
+
+                                <ul class="social-sharing-list" role="list" aria-label="Social media sharing options">
+                                    {% if this.theme.twitter %}
+                                    <li role="listitem">
+                                        <a href="https://twitter.com/intent/tweet?text={{highlight.title_encoded}}{{'news'|page}}/{{highlight.slug}}"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="col-xs col-md-12 btn p-primary pr p-twitter big social-share-btn"
+                                           aria-describedby="twitter-share-{{highlight.slug}}-desc">
+                                            <span class="sr-only">Share on Twitter</span>
+                                            <span class="social-icon twitter-icon" aria-hidden="true"></span>
+                                        </a>
+                                        <span id="twitter-share-{{highlight.slug}}-desc" class="sr-only">
+                                            Share "{{ highlight.title }}" on Twitter (opens in new window)
+                                        </span>
+                                    </li>
+                                    {% endif %}
+
+                                    {% if this.theme.facebook %}
+                                    <li role="listitem">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u={{'news'|page}}/{{highlight.slug}}&amp;src=sdkpreparse"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="col-xs col-md-12 btn pr p-primary p-facebook big social-share-btn"
+                                           aria-describedby="facebook-share-{{highlight.slug}}-desc">
+                                            <span class="sr-only">Share on Facebook</span>
+                                            <span class="social-icon facebook-icon" aria-hidden="true"></span>
+                                        </a>
+                                        <span id="facebook-share-{{highlight.slug}}-desc" class="sr-only">
+                                            Share "{{ highlight.title }}" on Facebook (opens in new window)
+                                        </span>
+                                    </li>
+                                    {% endif %}
+
+                                    {% if this.theme.linkedin %}
+                                    <li role="listitem">
+                                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{'news'|page}}/{{highlight.slug}}"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="col-xs col-md-12 btn pr p-primary p-linkedin big social-share-btn"
+                                           aria-describedby="linkedin-share-{{highlight.slug}}-desc">
+                                            <span class="sr-only">Share on LinkedIn</span>
+                                            <span class="social-icon linkedin-icon" aria-hidden="true"></span>
+                                        </a>
+                                        <span id="linkedin-share-{{highlight.slug}}-desc" class="sr-only">
+                                            Share "{{ highlight.title }}" on LinkedIn (opens in new window)
+                                        </span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+
+    <!-- Article Count Information -->
+    <div class="sr-only" aria-live="polite" role="status">
+        Showing {{ records.count }} article{{ records.count > 1 ? 's' : '' }}
+    </div>
+</section>
+
+{% else %}
+<!-- Empty State -->
+<section class="empty-state center-xs"
+         role="region"
+         aria-labelledby="no-articles-heading"
+         aria-describedby="no-articles-description">
+
+    <h2 id="no-articles-heading">No articles found</h2>
+    <div id="no-articles-description" class="sr-only">
+        There are currently no news articles available to display. Please check back later or try a different filter.
+    </div>
+
+    <!-- Helpful Action for Empty State -->
+    <div class="empty-state-actions" role="complementary">
+        <p>Try adjusting your search criteria or browse other sections.</p>
+        <nav aria-label="Alternative navigation">
+            <a href="{{'news'|page}}" class="btn btn-secondary">
+                View all news
+            </a>
+        </nav>
+    </div>
+</section>
+{% endif %}

@@ -1,0 +1,25 @@
+url = "/knowledge-exchange-networks"
+layout = "default"
+title = "Knowledge Exchange Networks"
+
+[jumbotron jumbotron1]
+jumbotron = "project-will-use-ongoing-processes-science-policy"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+[jumbotron jumbotron2]
+jumbotron = "seven-cases-have-already-been-selected"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+==
+<div class="container-fluid demonstration-cases">
+    {% component 'jumbotron1' %}
+
+    <div class="container-fluid cases secondary-background">
+        {% component 'jumbotron2' %}
+    </div>
+
+    {% partial 'science-service' %}
+</div>

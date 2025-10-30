@@ -1,0 +1,62 @@
+{% for record in records %}
+<div class="col-md-6 col-xs-12 library_item_container">
+    <div class="row library_item">
+        {% if record.cover %}
+        <div class="col-md-4 col-xs-12">
+            <img src="{{record.cover.thumb(262, 255, {'mode': 'crop'})}}">
+        </div>
+        {% endif %}
+        <div class="col-md col-xs-12">
+            <div class="library_format">{{record.format.title}}</div>
+            <div class="library_title">{{record.title}}</div>
+            {% if record.authors %}
+                <div class="library_param_row"><label>Authors:</label> {{ record.authors | replace({',': ', '}) }}</div>
+            {% endif %}
+            {% if record.project %}
+                <div class="library_param_row"><label>Project:</label> {{ record.project.title }}</div>
+            {% endif %}
+            {% if record.volume %}
+                <div class="library_param_row"><label>Volume:</label> {{ record.volume }}</div>
+            {% endif %}
+            {% if record.journal %}
+                <div class="library_param_row"><label>Journal:</label> {{ record.journal }}</div>
+            {% endif %}
+            {% if record.date %}
+                <div class="library_param_row"><label>Year:</label> {{ record.date | date('Y') }}</div>
+            {% endif %}
+            {% if record.status %}
+                <div class="library_param_row"><label>Status:</label> {{ record.status }}</div>
+            {% endif %}
+            {% if record.place %}
+                <div class="library_param_row"><label>Place:</label> {{ record.place }}</div>
+            {% endif %}
+            {% if record.pages %}
+                <div class="library_param_row"><label>Pages:</label> {{ record.pages }}</div>
+            {% endif %}
+            {% if record.source %}
+                <div class="library_param_row"><label>Source:</label> {{ record.source }}</div>
+            {% endif %}
+            {% if record.doi %}
+                <div class="library_param_row end-md start-xs"><label>URL/DOI:</label> <a href="{{ record.doi }}" target="_blank">{{ record.doi }}</a></div>
+            {% endif %}
+
+            {% if record.file or record.file_langs or record.web_page %}
+            <div class="library_param_row end-md start-xs">
+                {% if record.web_page %}
+                <a href="{{ record.web_page }}" target="_blank" class="btn btn-primary">Visit page</a>
+                {% endif %}
+                {% if record.file %}
+                <a href="{{ record.file.path }}" target="_blank" class="btn btn-primary"><i class="pr p-download"></i> Download</a>
+                {% endif %}
+                {% if record.file_langs %}
+                    {% for file_lang in record.file_langs %}
+                    <a href="{{ file_lang.path }}" target="_blank" class="btn btn-primary"><i class="pr p-download"></i> {{ file_lang.title }}</a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endfor %}

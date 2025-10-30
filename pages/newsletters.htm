@@ -1,0 +1,101 @@
+title = "Newsletters"
+layout = "default"
+url = "/newsletters"
+
+[jumbotron jumbotron1]
+jumbotron = "stay-date-latest-bioagora"
+background = "transperant"
+templates = "template3"
+description_limit = 0
+
+
+[menu tabs_menu]
+start = "id-13"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+==
+<?php
+use Pensoft\Articles\Models\Category;
+use Pensoft\Articles\Models\Article;
+
+function onStart(){
+    $categoryId = Category::where('name', 'Newsletters')->first()->id;
+    $records = Article::news()->whereHas('categories', function ($query) use ($categoryId) {
+        $query->where('id', $categoryId);
+    })->where('published_at', '<=', 'now')
+      ->where('published', 'true')
+      ->orderBy('published_at', 'DESC')
+      ->take(3)
+      ->get();
+
+    $this['newsletters'] = $records;
+}
+?>
+==
+
+<div class="container-fluid newsletters">
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    {% component 'jumbotron1' %}
+    <iframe style="display: block; margin-left: auto; margin-right: auto; max-width: 100%;" src="https://dashboard.mailerlite.com/forms/497643/92668673229063306/share" width="100%" height="1000" frameborder="0" scrolling="auto" allowfullscreen="allowfullscreen"></iframe>
+
+    <div class="container">
+        <h2 class="text-center">Our latest <strong>newsletters</strong></h2>
+        {% if newsletters.count > 0 %}
+        <div class="row newslist">
+            {% for newsletter in newsletters %}
+            <div class="col-xs-12 col-md-4 news-item item-{{newsletter.slug}}">
+                <div class="row news_column">
+                    {% if newsletter.cover %}
+                    <a class="news-image col-xs-12 center-xs" href="{{'news'|page}}/{{newsletter.slug}}">
+                        <img class="news-img-top" src="{{newsletter.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                             alt="Cover image for {{ newsletter.title }}"
+                             loading="lazy">
+                    </a>
+                    {% else %}
+                    <a class="news-image col-xs-12 center-xs" href="{{'news'|page}}/{{newsletter.slug}}">
+                        <img class="news-img-top" src="{{'pensoft/No_Image_Available.jpg'|media }}"
+                             alt="No image available for {{ newsletter.title }}"
+                             style="height: 212px; width: 370px;"
+                             loading="lazy">
+                    </a>
+                    {% endif %}
+                    <div class="news-container col-xs-12">
+                        <div class="text-published">{{ newsletter.date|date("d M Y") }}</div>
+                        <div class="news-title">
+                            <h3 class="card-title"><a href="{{'news'|page}}/{{newsletter.slug}}">{{ newsletter.title|length > 99 ? newsletter.title|slice(0, 99) ~ '...' : newsletter.title  }}</a></h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <a href="{{'news'|page}}/{{newsletter.slug}}" class="btn btn-primary">{{'Read article' |_}}</a>
+                            </div>
+                            <div class="col-xs-6">
+                                {% if allow_share == 'yes' %}
+                                    {% if this.theme.twitter %}
+                                    <a href="https://twitter.com/intent/tweet?text={{newsletter.title_encoded}}{{'news'|page}}/{{newsletter.slug}}" target="_blank" class="col-xs col-md-12 btn p-primary pr p-twitter big"></a>
+                                    {% endif %}
+                                    {% if this.theme.facebook %}
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{'news'|page}}/{{newsletter.slug}}&amp;src=sdkpreparse" target="_blank" class="col-xs col-md-12 btn pr p-primary p-facebook big"></a>
+                                    {% endif %}
+                                    {% if this.theme.linkedin %}
+                                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{'news'|page}}/{{newsletter.slug}}" target="_blank" class="col-xs col-md-12 btn pr p-primary p-linkedin big"></a>
+                                    {% endif %}
+                                {% endif %}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>

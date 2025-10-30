@@ -1,0 +1,145 @@
+[menu]
+start = "id-1"
+activeNode = 0
+listItemClasses = "nav-item"
+primaryClasses = "navbar-nav"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 1
+
+[jumbotron]
+jumbotron = "intro"
+background = "transperant"
+templates = "template1"
+description_limit = 0
+==
+<!--<div class="save_the_date_banner" role="region" aria-label="Save the date announcement">
+    <div class="banner_text"><b>SAVE THE DATE:</b> BIOAGORA SCIENCE-POLICY INTERFACE DIALOGUE WORKSHOP (1-2 OCTOBER; GHENT, BELGIUM)</div>
+    <a href="http://events.pensoft.net/events/bioagora-science-policy-interface-dialogue-workshop-building-bridges" class="btn btn-primary" target="_blank" rel="noopener noreferrer" aria-label="Register now (opens in a new tab)">Register now</a>
+</div>-->
+<nav class="navbar fixed" id="headernavbar" {% if user %} style="margin-top:69px;"{% endif %}>
+        <a href="{{'home'|page}}" class="navbar-brand">
+            <img src="{{ this.theme.site_logo.getPath() }}" alt="{{ this.theme.site_name }}">
+        </a>
+
+
+        <div id="google_translate_element" aria-label="Google Translate"></div>
+
+        <a class="pr p-search middle search-btn" aria-expanded="false" aria-controls="search" aria-label="Open search" onclick="showSearchForm();">
+            <span class="visually-hidden">Open search</span>
+        </a>
+
+
+    <div id="search" class="search" style="display: none;">
+        <div class="close-search" onclick="hideSearchForm();">&#10006;</div>
+        <form class="input-group align-items-start" action="{{ url('search')}}" method="get">
+            <label for="site-search-input" class="visually-hidden">Search the site</label>
+            <input id="site-search-input" class="form-control search_input" style="color: #000;" name="q" type="text" autocomplete="on" placeholder="Search" />
+            <button class="btn btn-link pr p-search big text-grey-search-btn" type="submit" aria-label="Submit search"><span class="visually-hidden">Search</span></button>
+        </form>
+    </div>
+
+
+        <button id="desktopMenuToggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+
+
+    <div class="navbar-collapse" id="headerNavbarNav">
+        <button id="closeMenuBtn" aria-label="Close navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M1 31L31 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 1L31 31" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        {% component 'menu' %}
+
+        <div class="navbar-bottom-elements">
+
+            <div class="social-icons">
+                <div class="head_leabel">Follow</div>
+                <div class="social-icons-container">
+                    {% if this.theme.bluesky_url %}
+                    <a href="{{this.theme.bluesky_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-bluesky normal social-icon" aria-label="Visit our Bluesky (opens in a new tab)"><span class="visually-hidden">Bluesky</span></a>
+                    {% endif %}
+                    {% if enable_facebook and facebook_url %}
+                    <a href="{{facebook_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-facebook normal social-icon" aria-label="Visit our Facebook (opens in a new tab)"><span class="visually-hidden">Facebook</span></a>
+                    {% endif %}
+                    {% if enable_linkedin and linkedin_url %}
+                    <a  href="{{linkedin_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-linkedin normal social-icon" aria-label="Visit our LinkedIn (opens in a new tab)"><span class="visually-hidden">LinkedIn</span></a>
+                    {% endif %}
+                    {% if enable_youtube and youtube_url %}
+                    <a  href="{{youtube_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-youtube normal social-icon" aria-label="Visit our YouTube (opens in a new tab)"><span class="visually-hidden">YouTube</span></a>
+                    {% endif %}
+                    {% if enable_instagram and instagram_url %}
+                    <a  href="{{instagram_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-instagram normal social-icon" aria-label="Visit our Instagram (opens in a new tab)"><span class="visually-hidden">Instagram</span></a>
+                    {% endif %}
+                    {% if enable_twitter and twitter_url %}
+                    <a href="{{twitter_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-twitter normal social-icon" aria-label="Visit our X (Twitter) (opens in a new tab)"><span class="visually-hidden">X (Twitter)</span></a>
+                    {% endif %}
+                    {% if this.theme.threads_url %}
+                    <a href="{{this.theme.threads_url}}" target="_blank" rel="noopener noreferrer" class="pr p-secondary p-threads normal social-icon" aria-label="Visit our Threads (opens in a new tab)"><span class="visually-hidden">Threads</span></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+
+{% if this.theme.header_image and page_id != 'home' and page_id != 'search' and not is_detail_page %}
+<div class="header-image {{page_id}}">
+    {%if page_id != 'home' and page_id != 'search' and not ken_detail_page %}
+        {%if this.page.header_image %}
+        <div class="header-image-bar" style="background-image: url('{{this.page.header_image|media}}'); background-position: left center;">
+            <h1 class="underline">{% if page_title %} {{ page_title }} {% else %} {{ site_name }} {% endif %}</h1>
+        </div>
+        {%else%}
+        <div class="header-image-bar" style="background-image: url('{{this.theme.header_image.getPath()}}'); background-position: left center;">
+            <h1 class="underline">{% if page_title %} {{ page_title }} {% else %} {{ site_name }} {% endif %}</h1>
+        </div>
+        {%endif%}
+    {% else %}
+        {% if this.page.header_image %}
+        <div class="header-image-bar" style="background-image: url('{{this.page.header_image|media}}'); background-position: right center; background-size: cover;">
+            <div class="jumbotron container">
+                {% if page_id != 'home' and page_id != 'search' %}
+                <h1 class="underline white">
+                    {% if ken_detail_page %}
+                    <b>{{ken_title}}</b>
+                    {% else %}
+                    {% if page_title %} {{ page_title }} {% else %} {{ site_name }} {% endif %}
+                    {% endif %}
+                </h1>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="header-image-bar"
+             {% if ken_detail_page and ken_header_image %}
+             style="background-image: url('{{ken_header_image.path}}'); background-position: right center; background-size: cover;"
+             {% else %}
+             style="background-image: url('{{this.theme.header_image.getPath()}}'); background-position: right center; background-size: cover;"
+             {% endif %}
+        >
+            <div class="jumbotron container">
+                {% if page_id != 'home' and page_id != 'search' %}
+                <h1 class="underline white">
+                    {% if ken_detail_page %}
+                    <b>{{ken_title}}</b>
+                    {% else %}
+                    {% if page_title %} {{ page_title }} {% else %} {{ site_name }} {% endif %}
+                    {% endif %}
+                </h1>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endif %}

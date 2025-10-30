@@ -1,0 +1,248 @@
+url = "/our-team"
+layout = "default"
+title = "Our Team"
+
+
+[menu tabs_menu]
+start = "id-2"
+activeNode = 0
+listItemClasses = "item"
+primaryClasses = "nav nav-pills"
+secondaryClasses = "dropdown-menu"
+numberOfLevels = 2
+
+[siteSearchInclude]
+
+==
+<?php
+use Pensoft\Partners\Models\Partners;
+use Pensoft\CardProfiles\Models\Profiles as Profiles;
+
+function onStart(){
+	$this['partners'] =  Partners::get();
+
+    $this['partner_members'] = new class {
+        public function getProfiles($partnerId) {
+            return Profiles::where('partner_id', $partnerId)->where('category_id', 1)->get();
+}
+};
+
+}
+?>
+==
+{% component 'siteSearchInclude' %}
+
+<main id="main-content" role="main" aria-labelledby="partners-page-title">
+    <!-- Page Title (screen reader only) -->
+    <h1 id="partners-page-title" class="sr-only">Partners and Team Members</h1>
+
+    <div class="container">
+        <div class="category-tabs">
+            {% component 'tabs_menu' %}
+        </div>
+    </div>
+
+    <section id="partners-accordion"
+             class="mt-4 mb-4 partners-section"
+             role="region"
+             aria-labelledby="partners-list-heading"
+             aria-describedby="partners-instructions">
+
+        <header>
+            <h2 id="partners-list-heading" class="sr-only">Partner Organizations</h2>
+            <div id="partners-instructions" class="sr-only">
+                Navigate through partner organizations using the accordion below. Use Enter or Space to expand or collapse partner sections. Use Tab to move between partners and team members.
+            </div>
+        </header>
+
+        <div class="partners-accordion"
+             role="list"
+             aria-label="List of partner organizations">
+
+            {% for partner in partners %}
+            {% if partner_members.getProfiles(partner.id).count > 0 %}
+            <article class="container800 work_packages team_container partner-organization"
+                     id="{{ partner.instituion|slug }}"
+                     role="listitem"
+                     aria-labelledby="partner-name-{{ loop.index }}">
+
+                <!-- Partner Organization Header/Toggle -->
+                <header class="row middle-xs accordion-toggle partner-toggle"
+                        role="button"
+                        tabindex="0"
+                        aria-expanded="false"
+                        aria-controls="partner-content-{{ loop.index }}"
+                        data-toggle="collapse"
+                        data-target="#partner-content-{{ loop.index }}">
+
+                    <div class="col-xs start-xs">
+                        <h3 id="partner-name-{{ loop.index }}" class="partner-institution-name">
+                            {{ partner.instituion }}
+                            <span class="partner-country" aria-label="Country">, {{ partner.country[0].name }}</span>
+                        </h3>
+
+                        <!-- Screen reader context for partner -->
+                        <div class="sr-only partner-context">
+                            Partner institution from {{ partner.country[0].name }} with {{ partner_members.getProfiles(partner.id).count }} team members. Click to view team.
+                        </div>
+                    </div>
+
+                    <div class="col-xs-2 end-xs plusminus expand-indicator" aria-hidden="true">
+                        <span class="plus" aria-hidden="true"></span>
+                        <span class="sr-only expand-text">Click to expand team members</span>
+                        <span class="sr-only collapse-text" style="display: none;">Click to collapse team members</span>
+                    </div>
+
+                    <!-- Toggle instructions -->
+                    <span class="sr-only toggle-instructions">
+                        Press Enter or Space to view team members from {{ partner.instituion }}
+                    </span>
+                </header>
+
+                <!-- Partner Team Members Content -->
+                <div id="partner-content-{{ loop.index }}"
+                     class="accordion-content partner-team-content"
+                     role="region"
+                     aria-labelledby="partner-name-{{ loop.index }}"
+                     aria-describedby="team-members-{{ loop.index }}-desc"
+                     aria-hidden="true"
+                     style="display: none;">
+
+                    <div id="team-members-{{ loop.index }}-desc" class="sr-only">
+                        Team members from {{ partner.instituion }}
+                    </div>
+
+                    <div class="team-members-list"
+                         role="list"
+                         aria-label="Team members from {{ partner.instituion }}">
+
+                        {% for profile in partner_members.getProfiles(partner.id) %}
+                        <article class="row member-item team-member"
+                                 role="listitem"
+                                 aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}">
+
+                            <!-- Team Member Avatar -->
+                            <div class="col-md-2 col-xs-12 member-avatar-section">
+                                <figure class="avatar-container">
+                                    {% if profile.avatar %}
+                                    <img class="img-fluid member-avatar"
+                                         src="{{ profile.avatar|crop_image }}"
+                                         alt="Professional photo of {{ profile.names }}"
+                                         role="img"
+                                         aria-describedby="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc">
+                                    {% else %}
+                                    <img class="img-fluid member-avatar"
+                                         src="{{ 'profile-image-placeholder.png'|media }}"
+                                         alt="Default profile image for {{ profile.names }}"
+                                         role="img"
+                                         aria-describedby="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc">
+                                    {% endif %}
+                                    <figcaption id="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
+                                        Profile image for {{ profile.names }} from {{ partner.instituion }}
+                                    </figcaption>
+                                </figure>
+                            </div>
+
+                            <!-- Team Member Details -->
+                            <div class="col-md-10 col-xs-12 member-info-section">
+                                <div class="member-details">
+                                    <header class="member-header">
+                                        <h4 id="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                            class="member-name">
+                                            {{ profile.names }}
+                                        </h4>
+
+                                        <!-- Member context -->
+                                        <div class="sr-only member-context">
+                                            Team member from {{ partner.instituion }}, {{ partner.country[0].name }}
+                                        </div>
+                                    </header>
+
+                                    <!-- Hidden Biography Content -->
+                                    <div class="body member-biography"
+                                         id="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                         role="region"
+                                         aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                         aria-hidden="true"
+                                         style="display: none;">
+                                        <div class="sr-only">Biography for {{ profile.names }}:</div>
+                                        {{ profile.content | raw }}
+                                    </div>
+
+                                    <!-- Biography Toggle Button -->
+                                    <p class="read-more-bio biography-toggle"
+                                       aria-expanded="false"
+                                       aria-controls="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
+                                       aria-describedby="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc"
+                                       onclick="expandBiography(this);">Read biography</p>
+
+                                    <span id="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
+                                        Click to read the full biography of {{ profile.names }}
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Partners Summary -->
+        <footer class="partners-summary sr-only" role="contentinfo">
+            End of partners section.
+            {% set total_partners = 0 %}
+            {% set total_members = 0 %}
+            {% for partner in partners %}
+            {% if partner_members.getProfiles(partner.id).count > 0 %}
+            {% set total_partners = total_partners + 1 %}
+            {% set total_members = total_members + partner_members.getProfiles(partner.id).count %}
+            {% endif %}
+            {% endfor %}
+            {{ total_partners }} partner organizations with {{ total_members }} total team members.
+        </footer>
+    </section>
+
+    <!-- Partners Information Call-to-Action -->
+    <section id="partners-info"
+             class="container-fluid science-service partners-cta-section"
+             role="region"
+             aria-labelledby="partners-cta-heading"
+             aria-describedby="partners-cta-description">
+
+        <div class="container">
+            <div class="row">
+                <header class="col-md-10 col-xs-12">
+                    <h2 id="partners-cta-heading" class="fl-heading" data-aos="fade-right">
+                        <span class="fl-heading-text">Learn more about our partners</span>
+                    </h2>
+                    <div id="partners-cta-description" class="sr-only">
+                        Discover detailed information about our partner organizations and their contributions to the project
+                    </div>
+                </header>
+                <div class="col-md-2 col-xs-12 end-md center-xs">
+                    <nav aria-label="Partners navigation">
+                        <a href="{{'our-partners'|page}}"
+                           class="btn btn-float partners-link"
+                           aria-describedby="partners-link-desc">
+                            Learn more about partners
+                        </a>
+                        <span id="partners-link-desc" class="sr-only">
+                            Visit the dedicated partners page for comprehensive information about all partner organizations
+                        </span>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Live Region for Dynamic Announcements -->
+<div id="partners-live-region"
+     aria-live="polite"
+     aria-atomic="true"
+     class="sr-only"
+     role="status">
+</div>
