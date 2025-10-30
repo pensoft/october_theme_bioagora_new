@@ -365,9 +365,15 @@ ul.pagination{
 
             .legal-links{
                 li{
-                    display: block;
-                    text-align: center;
-                    padding: 10px 0;
+                    display: inline;
+                    text-align: left;
+                    padding: 0 10px 0 0;
+                    .breakpoint-large-down({
+                        display: block;
+                        text-align: center;
+                        padding: 10px 0;
+                    });
+
 
                 }
                 li[aria-hidden="true"]{
