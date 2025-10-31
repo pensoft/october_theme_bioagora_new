@@ -48,7 +48,7 @@ function onStart(){
     <h1 id="homepage-title" class="sr-only">BioAgora Homepage</h1>
 
     <!-- Introduction Section -->
-    <section role="banner" class="homepage_intro"
+    <section role="banner" class="homepage_intro container800"
              aria-labelledby="intro-heading"
              aria-describedby="intro-description">
         <h2 id="intro-heading" class="sr-only">Introduction</h2>
@@ -130,7 +130,7 @@ function onStart(){
                         <div class="col-xs-12" role="list"
                              aria-label="List of {{ highlights|length }} news highlights">
                             {% for highlight in news %}
-                            <article class="col-xs-12 col-md-3 news-item item-{{slug}} highlight-article"
+                            <article class="col-xs-12 col-md-4 news-item item-{{slug}} highlight-article"
                                      role="listitem"
                                      aria-labelledby="highlight-title-{{ loop.index }}">
                                 <div class="row news_column">
@@ -141,7 +141,7 @@ function onStart(){
                                         {% endif %}
 
                                         <img class="news-img-top"
-                                             src="{{ highlight.cover|crop_image|resize(354, 311, {'mode': 'crop'}) }}"
+                                             src="{{ highlight.cover|crop_image|resize(auto, 311, {'mode': 'crop'}) }}"
                                              alt="Featured image for news article: {{ highlight.title|striptags }}"
                                              role="img"
                                              aria-describedby="highlight-img-context-{{ loop.index }}"
@@ -158,14 +158,14 @@ function onStart(){
                                                 {% if highlight.slug %}
                                                 <a href="{{'news'|page}}/{{highlight.slug}}"
                                                    aria-describedby="highlight-context-{{ loop.index }}">
-                                                    {{ highlight.title|length > 99 ? highlight.title|striptags|slice(0, 99)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
-                                                    {% if highlight.title|length > 99 %}
+                                                    {{ highlight.title|length > 75 ? highlight.title|striptags|slice(0, 75)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
+                                                    {% if highlight.title|length > 75 %}
                                                     <span class="sr-only"> (title truncated)</span>
                                                     {% endif %}
                                                 </a>
                                                 {% else %}
-                                                {{ highlight.title|length > 99 ? highlight.title|striptags|slice(0, 99)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
-                                                {% if highlight.title|length > 99 %}
+                                                {{ highlight.title|length > 75 ? highlight.title|striptags|slice(0, 75)|replace({"&nbsp;": " ", ".": ". "}) ~ '...' : highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
+                                                {% if highlight.title|length > 75 %}
                                                 <span class="sr-only"> (title truncated)</span>
                                                 {% endif %}
                                                 {% endif %}
@@ -174,7 +174,7 @@ function onStart(){
                                             {% if highlight.slug %}
                                             <span id="highlight-context-{{ loop.index }}" class="sr-only">
                                                Published {{ highlight.pretty_published_at }}. Click to read the complete article.
-                                               {% if highlight.title|length > 99 %}
+                                               {% if highlight.title|length > 75 %}
                                                Full title: {{ highlight.title|striptags|replace({"&nbsp;": " ", ".": ". "}) }}
                                                {% endif %}
                                             </span>

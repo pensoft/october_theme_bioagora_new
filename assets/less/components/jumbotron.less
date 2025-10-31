@@ -93,6 +93,11 @@
 }
 
 .homepage_intro{
+
+    .homepage_intro_shorter{
+        padding-left: 7%;
+        padding-right: 7%;
+    }
     .container{
         //p{
         //    color: #5F6683;
@@ -135,6 +140,93 @@
         background-color: rgba(0, 0, 0, 0.37);
         h2{
             color: white;
+        }
+    }
+}
+
+
+.about_intro_info{
+
+    padding-top: 0;
+
+    .row:nth-of-type(1){
+        .col-md-5{
+            position: relative;
+            &:after{
+                position: absolute;
+                content: '';
+                width: 100%;
+                height: 50%;
+                background: url("../../assets/images/about_leaf2.png") center no-repeat;
+                background-size: contain;
+                bottom: 0;
+                left: -50%;
+            }
+        }
+
+        .col-md-7{
+            padding-left: 69px;
+            .breakpoint-large-down({
+                padding-left: unset;
+            });
+        }
+    }
+    .row:nth-of-type(2){
+        .col-md-5{
+            position: relative;
+            &:after{
+                position: absolute;
+                content: '';
+                width: 100%;
+                height: 50%;
+                background: url("../../assets/images/about_leaf1.png") center no-repeat;
+                background-size: contain;
+                bottom: 0;
+                right: -50%;
+            }
+        }
+
+        .col-md-7{
+            padding-right: 69px;
+            .breakpoint-large-down({
+                padding-right: unset;
+            });
+        }
+    }
+
+}
+
+.explore_about_bottom{
+    .col-md-6{
+        padding: 0;
+        .info{
+            background: url("../../assets/images/about_bottom1.png") center no-repeat;
+            background-size: cover;
+            width: calc(~'100% - 120px');
+            height: 394px;
+            display: flex;
+            align-items: center;
+            padding: 50px 60px;
+            color: #FFF;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: normal;
+            letter-spacing: -0.64px;
+            p{
+                font-weight: 600;
+                a{
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .col-md-6:nth-of-type(2){
+        .info{
+            background: url("../../assets/images/about_bottom2.png") center no-repeat;
+            background-size: cover;
+
         }
     }
 }
@@ -319,6 +411,20 @@
         margin-bottom: 20px;
     }
 }
+.container:has(.category-tabs){
+    padding-bottom: 40px;
+}
+
+.container.main_container{
+    padding-top: 0;
+}
+
+.faqs{
+    .container800{
+        padding-top: 0;
+    }
+}
+
 
 .category-tabs{
     display: flex;
@@ -407,10 +513,10 @@
             letter-spacing: -0.56px;
         }
 }
-
-.page-bg{
-    background: url("../../assets/images/page-bg2.png") bottom right no-repeat;
-}
+//
+//.page-bg{
+//    //background: url("../../assets/images/page-bg2.png") bottom right no-repeat;
+//}
 
 .join-bka{
     h2{
@@ -800,7 +906,7 @@
         .close{
             color: #0027BE;
             font-weight: 100;
-            font-size: 29px;
+            font-size: 40px!important;
         }
     }
 
@@ -1251,7 +1357,7 @@
         .close{
             color: @link-color!important;
             font-weight: 100;
-            font-size: 35px;
+            font-size: 40px!important;
             top: -30px;
             right: -20px;
         }
@@ -1453,6 +1559,22 @@
 
 }
 
+.our-partners{
+    .container800{
+        padding: 0;
+        .container{
+            padding: 0;
+            h2{
+                margin-top: 0;
+            }
+        }
+    }
+
+    .tabs_container{
+        padding-top: 0;
+    }
+}
+
 .home{
     .subscriber{
         display: flex;
@@ -1469,8 +1591,7 @@
         font-weight: 600;
         line-height: normal;
         letter-spacing: -0.56px;
-        margin-bottom: 116px;
-        margin-top: 67px;
+        margin-bottom: 56px;
         .breakpoint-large-down({
             margin-bottom: 0;
             margin-top: 0;
@@ -1592,6 +1713,14 @@
 .knowledge-requests,
 .knowledge-exchange-networks,
 .science-service-biodiversity{
+    //
+    //.col-md-3:has(.category-tabs){
+    //    position: sticky;
+    //    top: 20px;
+    //    align-self: flex-start;
+    //}
+
+
     .col-md-9{
         .container{
             padding: 0;

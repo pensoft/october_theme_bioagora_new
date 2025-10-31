@@ -82,21 +82,16 @@ function onStart(){
                            aria-describedby="article-image-{{highlight.slug}}-desc">
                             {% if highlight.cover %}
                             <img class="news-img-top"
-                                 src="{{highlight.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                                 src="{{highlight.cover.getThumb(auto, 311, {'mode': 'crop'})}}"
                                  alt="Featured image for article: {{ highlight.title }}"
                                  role="img"
-                                 loading="lazy"
-                                 width="370"
-                                 height="212">
+                                 loading="lazy">
                             {% else %}
                             <img class="news-img-top"
                                  src="{{'pensoft/No_Image_Available.jpg'|media }}"
                                  alt="No image available for article: {{ highlight.title }}"
                                  role="img"
-                                 loading="lazy"
-                                 style="height: 212px; width: 370px;"
-                                 width="370"
-                                 height="212">
+                                 loading="lazy">
                             {% endif %}
                         </a>
                         <span id="article-image-{{highlight.slug}}-desc" class="sr-only">

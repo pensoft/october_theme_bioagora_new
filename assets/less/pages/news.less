@@ -157,6 +157,11 @@ nav:not(.navbar){
         .base_heading{
             display: none;
         }
+
+        .news-section-heading{
+            margin-bottom: 0!important;
+            margin-top: 0!important;
+        }
     }
 
     .newslist .col-xs-12{
@@ -179,11 +184,14 @@ nav:not(.navbar){
                 background: @white-color;
                 display: block;
                 position: relative;
+                max-width: 100%;
 
                 img{
-                    width: auto!important;
+                    width: 100%!important;
                     border-radius: 20px;
                     max-width: 100%;
+                    height: 311px;
+                    object-fit: cover;
                 }
 
                 .news-image{
@@ -214,16 +222,6 @@ nav:not(.navbar){
                     letter-spacing: -0.28px;
                 }
 
-                //.news-container{
-                //    padding: 20px 20px;
-                //    display: flex;
-                //    flex-direction: column;
-                //    justify-content: start;
-                //    .breakpoint-small-down({
-                //        height: auto;
-                //    })
-                //}
-
 
                 .news-container{
                     //min-height: 251px;
@@ -231,7 +229,7 @@ nav:not(.navbar){
                     display: flex;
                     flex-direction: column;
                     padding: 0;
-                    width: 354px;
+                    //width: 354px;
                     max-width: 95%;
                     //justify-content: space-around;
                     .breakpoint-small-down({
@@ -271,8 +269,14 @@ nav:not(.navbar){
             });
         }
 
+        .news-item:nth-of-type(2n){
+            margin-right: 0;
+            justify-content: center;
+        }
+
         .news-item:nth-of-type(3n){
             margin-right: 0;
+            justify-content: flex-end;
         }
     }
 }
@@ -294,10 +298,7 @@ nav:not(.navbar){
 }
 
 .home .newslist{
-    margin-top: 50px;
-    .breakpoint-small-down({
-        margin-top: 10px;
-    })
+    margin-top: 10px;
 }
 
 .news, .newsletters{
@@ -325,13 +326,15 @@ nav:not(.navbar){
             background: @white-color;
             display: block;
             position: relative;
-            width: 354px;
+            //width: 354px;
             max-width: 95%;
 
             img{
-                width: auto!important;
+                width: 100%!important;
                 border-radius: 20px;
                 max-width: 100%;
+                height: 311px;
+                object-fit: cover;
             }
 
             .news-image{
@@ -379,7 +382,7 @@ nav:not(.navbar){
                 display: flex;
                 flex-direction: column;
                 padding: 0;
-                width: 354px;
+                //width: 354px;
                 max-width: 95%;
                 //justify-content: space-around;
                 .breakpoint-small-down({

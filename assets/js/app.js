@@ -680,39 +680,8 @@ function onMapCustomPartners(pCode) {
         }, 1000);
         var tooltip = document.getElementById("tooltip");
         tooltip.classList.remove("active");
-        //
-        // var x = event.clientX;
-        // var y = event.clientY;
-        //
-        // tooltip.style.left = (x + 20) + "px";
-        // tooltip.style.top = (y - 20) + "px";
-
-        // $('.partners .partner_description').each(function(){
-        //     var countParagraphs = $(this).find('p').length;
-        //     if(countParagraphs > 1) {
-        //         $(this).find('p').first().append('<div class="dorsal">Read more</div>');
-        //         $(this).find('p:not(:first)').wrapAll("<div class='toogle-contact-paragraphs'></div>")
-        //     }
-        // });
-
-        // $('.dorsal').click(function () {
-        //     var link = $(this);
-        //     link.parent().parent().find('.toogle-contact-paragraphs').slideToggle('slow', function() {
-        //         if ($(this).is(':visible')) {
-        //             link.text('Read less');
-        //         } else {
-        //             link.text('Read more');
-        //         }
-        //     });
-        //
-        // });
-
-
 
     });
-
-
-
 
 }
 
@@ -1088,19 +1057,20 @@ function isScrolledIntoView(elem) {
 	return;
 
 }
-
-
-function expandBiography(el){
-    $el = $(el) // read-more link
-    $body  = $el.parent().parent().find('.body');
-    if($body.is(':visible')){
-        $body.slideUp(300);
-        $el.addClass('expanded');
-    }else{
-        $body.slideDown(300);
-        $el.removeClass('expanded');
-    }
-}
+//
+//
+// function expandBiography(el){
+//     $el = $(el) // read-more link
+//     $body  = $el.parent().parent().find('.body');
+//     console.log($el);
+//     if($body.is(':visible')){
+//         $body.slideUp(300);
+//         $el.addClass('expanded');
+//     }else{
+//         $body.slideDown(300);
+//         $el.removeClass('expanded');
+//     }
+// }
 
 
 
@@ -1206,7 +1176,7 @@ function openFundingCallModalBtn(){
 
 function expandBiography(el){
     $el = $(el) // read-more link
-    $body  = $el.parent().find('.body');
+    $body  = $el.parent().parent().find('.body');
     if($body.is(':visible')){
         $body.slideUp(300);
         $el.addClass('expanded');

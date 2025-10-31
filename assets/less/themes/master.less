@@ -365,13 +365,25 @@ ul.pagination{
 
             .legal-links{
                 li{
-                    display: block;
-                    text-align: center;
-                    padding: 10px 0;
+                    display: inline;
+                    text-align: left;
+                    padding: 0 10px 0 0;
+                    .breakpoint-large-down({
+                        display: block;
+                        text-align: center;
+                        padding: 10px 0;
+                    });
+
 
                 }
                 li[aria-hidden="true"]{
-                    display: none;
+                    content: '|';
+                    font-size: 13px;
+                    color: #4A4A4A;
+                    .breakpoint-large-down({
+                        display: none;
+                    });
+
                 }
             }
         }
@@ -943,7 +955,7 @@ footer .align-items-center{
         .close{
             color: @link-color!important;
             font-weight: 100;
-            font-size: 35px;
+            font-size: 40px!important;
             top: -30px;
             right: -20px;
         }
@@ -1160,15 +1172,8 @@ footer .align-items-center{
         display: inline-block;
     }
 
-    //.container:not(.main_container){
-    //    padding: 0 20px 50px 20px !important;
-    //}
-    //
-    //.logo_and_btn{
-    //    width: 100%;
-    //    padding: 0 0 20px 0;
-    //    border-bottom: 1px solid #ECECEC;
-    //}
+
+
 }
 
 .home{
@@ -1279,7 +1284,7 @@ footer .align-items-center{
         .close{
             color: #0027BE;
             font-weight: 100;
-            font-size: 29px!important;
+            font-size: 40px!important;
             top: 20px !important;
             right: 20px !important;
             width: 20px;
@@ -1377,7 +1382,7 @@ footer .align-items-center{
         .close{
             color: #0027BE;
             font-weight: 100;
-            font-size: 29px;
+            font-size: 40px!important;
             top: -30px;
             right: -20px;
             .breakpoint-large-down({
@@ -1485,7 +1490,7 @@ footer [tabindex]:focus {
     text-align: left!important;
     left: 72px!important;
     text-shadow: none!important;
-    width: 38%;
+    width: 60%;
     height: fit-content;
     top: 50%;
     transform: translateY(-50%);
@@ -1503,6 +1508,7 @@ footer [tabindex]:focus {
     .breakpoint-huge-down({
         font-size: 37px;
         left: 15%!important;
+        width: 70%;
 
     });
     .breakpoint-large-down({
@@ -1758,3 +1764,7 @@ now override the 3.3 new styles for modern browsers & apply opacity
     }
 }
 
+
+.userway_buttons_wrapper{
+    top: 126px!important;
+}
