@@ -2,31 +2,151 @@
 
 
 
-        {% for partner in partners %}
-        <div class="col-md-4 col-xs-12">
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front">
-                        <div class="flip-card-content">
-                            {% if partner.cover %}
-                            <a href="{{partner.instituion_url}}" aria-label="Open the {{ partner.instituion }} website (opens in new tab)" target="_blank"><img alt="{{ partner.instituion }}" src="{{partner.cover.getThumb(auto,30, { mode : 'crop' } )}}"></a>
-                            {% endif %}
-                            <h3>{{ partner.instituion }}<br>{{ partner.country[0].name }}</h3>
+{% for k, partner in partners %}
+<div class="col-md-4 col-xs-12">
+    <div class="flip-card">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <div class="flip-card-content">
+                    {% if partner.cover %}
+                    <a href="{{partner.instituion_url}}" aria-label="Open the {{ partner.instituion }} website (opens in new tab)" target="_blank"><img alt="{{ partner.instituion }}" src="{{partner.cover.getThumb(auto,30, { mode : 'crop' } )}}"></a>
+                    {% endif %}
+                    <div class="partner_title">
+                        <h3>{{ partner.instituion }}</h3>
+                    </div>
+                    <div class="overlay">
+                        <div class="partner_title" id="partner-title-{{k}}">
+                            <h3>{{ partner.instituion }}</h3>
+                        </div>
+                        <div class="read_more_container">
+                            <a data-toggle="modal"
+                               href="#partner{{k}}"
+                               class="read_more"
+                               aria-label="Read more about {{partner.instituion}}"
+                               role="button">Read more</a>
                         </div>
                     </div>
-<!--                    <div class="flip-card-back">-->
-<!--                        <div class="row flip-card-content">-->
-<!--                            <div class="col-xs-12">{{partner.content|raw}}</div>-->
-<!--&lt;!&ndash;                            <div class="col-xs-12">&ndash;&gt;-->
-<!--&lt;!&ndash;                                <a class="website" href="{{'our-team'|page}}#{{partner.instituion|slug}}">Main contact</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                            </div>&ndash;&gt;-->
-<!--                            <div class="col-xs-12">-->
-<!--                                <a class="website" href="{{partner.instituion_url}}" target="_blank">Website of the partner</a>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+
                 </div>
             </div>
         </div>
-        {% endfor %}
+    </div>
+</div>
+
+<div class="control-popup modal fade"
+     id="partner{{k}}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="modal-title-{{k}}"
+     aria-describedby="modal-content-{{k}}"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <button type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close partner information dialog">
+                &times;
+            </button>
+
+
+            <div class="row">
+                <div class="col-md-5 col-xs-12 logo_and_btn">
+                    <div class="partner-logo-container">
+                        {% if partner.cover %}
+                        <img class="partner-logo"
+                             src="{{partner.cover.getThumb(auto, 100, {'mode': 'crop'})}}"
+                             alt="Logo for {{ partner.instituion }} partner"
+                             role="img">
+                        {% endif %}
+                    </div>
+
+                    <div class="partner-website-container">
+                        {% if partner.instituion_url %}
+                        <a href="{{partner.instituion_url}}"
+                           class="partner_website"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           aria-describedby="website-{{partner.id}}-desc">
+                            Visit website
+                            <span class="sr-only">Visit {{ partner.instituion }} website (opens in new window)</span>
+                        </a>
+                        <span id="website-topical-{{partner.id}}-desc" class="sr-only">
+                                            Opens the official website for {{ partner.instituion }} partner in a new window
+                                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-7 col-xs-12 overflow_scroll">
+                    <!-- partner Description -->
+                    <section class="partner-description"
+                             aria-labelledby="description-heading-{{partner.id}}">
+                        <h3 id="description-topical-heading-{{partner.id}}" class="sr-only">
+                            Partner Description
+                        </h3>
+                        <div class="description-content" role="document">
+                            <div class="partner_info">
+                                <div class="partner_description" style="">
+                                    <div class="sr-only">Description for {{ partner.instituion }}:</div>
+                                    {{partner.content|raw}}
+                                </div>
+                                <p><a class="read-more dorsal">Read more</a></p>
+                            </div>
+                            <div class="partner_detailed_info">
+                                {% if insider_members.getIM(partner.id).count > 0 %}
+                                <section role="region" aria-labelledby="members-heading-{{k}}">
+                                    <h3 id="members-heading-{{k}}">Our Team</h3>
+                                    <div class="partners_list_content">
+                                        {% for profile in insider_members.getIM(partner.id) %}
+                                        <article class="contact_info row" role="article" aria-labelledby="member-name-{{k}}-{{loop.index}}">
+                                            <div class="col-md-3 col-xs-12 coordinator_image">
+                                                {% if profile.avatar %}
+                                                <img alt="Photo of {{ profile.names }}" src="{{profile.avatar.getThumb(86,78, { mode : 'crop' } )}}">
+                                                {% else %}
+                                                <img alt="Default avatar for {{ profile.names }}" src="{{ 'avatar.svg'|media }}" width="82" height="67" class="no-image">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6 col-xs-12 coordinator_info">
+                                                <div class="">
+                                                    <h4 id="member-name-{{k}}-{{loop.index}}">{{ profile.names }}</h4>
+                                                    {% if profile.email %}
+                                                    <div class="position">
+                                                        <a href="mailto:{{ profile.email }}"
+                                                           target="_blank"
+                                                           aria-label="Send email to {{ profile.names }}">{{ profile.email }}</a>
+                                                    </div>
+                                                    {% endif %}
+                                                    {% if profile.position %} <div class="position">{{ profile.position }}</div>{% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 col-xs-12">
+                                                <p class="read-more"
+                                                   onclick="expandBiography(this);"
+                                                   aria-expanded="false"
+                                                   aria-controls="bio-{{k}}-{{loop.index}}"
+                                                   aria-label="Read biography of {{ profile.names }}">Biography</p>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="body"
+                                                     id="bio-{{k}}-{{loop.index}}"
+                                                     style="display: none;"
+                                                     role="region"
+                                                     aria-labelledby="member-name-{{k}}-{{loop.index}}">{{ profile.content|raw }}</div>
+                                            </div>
+                                        </article>
+                                        {% endfor %}
+                                    </div>
+                                </section>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
 

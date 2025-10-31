@@ -50,7 +50,7 @@ numberOfLevels = 2
     </div>
     <!-- Primary Jumbotron Section -->
     <section id="primary-content"
-             class="container primary_content"
+             class="container primary_content about_intro_info"
              role="banner"
              aria-labelledby="primary-jumbotron-heading"
              aria-describedby="primary-jumbotron-description">
@@ -61,20 +61,6 @@ numberOfLevels = 2
         {% component 'jumbotron1' %}
     </section>
 
-<!--    &lt;!&ndash; Featured Content Section &ndash;&gt;-->
-<!--    <section id="featured-content"-->
-<!--             class="container-fluid about-content-wrap"-->
-<!--             role="region"-->
-<!--             aria-labelledby="featured-content-heading"-->
-<!--             aria-describedby="featured-content-description">-->
-<!--        <div class="layer">-->
-<!--            <h2 id="featured-content-heading" class="sr-only">Featured Content</h2>-->
-<!--            <div id="featured-content-description" class="sr-only">-->
-<!--                Additional featured information and highlights about our organization and mission-->
-<!--            </div>-->
-<!--            {% component 'jumbotron2' %}-->
-<!--        </div>-->
-<!--    </section>-->
 
     <!-- Secondary Content Section -->
     <section class="container"
@@ -88,15 +74,29 @@ numberOfLevels = 2
         {% component 'jumbotron3' %}
     </section>
 
-<!--    &lt;!&ndash; Science Services Section &ndash;&gt;-->
-<!--    <section id="services-section"-->
-<!--             role="region"-->
-<!--             aria-labelledby="services-heading"-->
-<!--             aria-describedby="services-description">-->
-<!--        <h2 id="services-heading" class="sr-only">Science Services</h2>-->
-<!--        <div id="services-description" class="sr-only">-->
-<!--            Information about our scientific services, research support, and collaborative opportunities-->
-<!--        </div>-->
-<!--        {% partial 'science-service' %}-->
-<!--    </section>-->
+
+    <section id="explore"
+             class="container-fluid explore_about_bottom"
+             role="region"
+             aria-labelledby="explore-heading"
+             aria-describedby="explore-description">
+        <h2 id="explore-heading" class="sr-only">BioAgora will</h2>
+        <div id="explore-description" class="sr-only">
+            Explore BioAgora will for Biodiversity
+        </div>
+        <div class="row bottom-xs">
+            <div class="col-md-6 col-xs-12">
+                <div class="info">
+                    <p>BioAgora will support a sustainable transformation for biodiversity in Europe.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="info">
+                    <p>BioAgora will go beyond the state of the art by co-creating new ways of bridging the gap between science, practice, and policy, which will be used as a basis for the development of the Science Service for Biodiversity.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
 </main>

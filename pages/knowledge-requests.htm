@@ -369,14 +369,13 @@ if(get('download')){
                                        aria-describedby="general-news-{{highlight.slug}}-desc">
                                         {% if highlight.cover %}
                                         <img class="news-img-top"
-                                             src="{{highlight.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                                             src="{{highlight.cover.getThumb(auto, 311, {'mode': 'crop'})}}"
                                              alt="Cover image for {{ highlight.title }}"
                                              loading="lazy">
                                         {% else %}
                                         <img class="news-img-top"
                                              src="{{'pensoft/No_Image_Available.jpg'|media }}"
                                              alt="No image available for {{ highlight.title }}"
-                                             style="height: 212px; width: 370px;"
                                              loading="lazy">
                                         {% endif %}
                                     </a>
