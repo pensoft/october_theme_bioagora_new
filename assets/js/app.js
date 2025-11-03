@@ -215,6 +215,8 @@ $(document).ready(function() {
 
 
 
+
+
     $('.dropdown a').click(function(event) {
 
         if (location.href.indexOf("#") != -1) {
@@ -253,47 +255,12 @@ $(document).ready(function() {
 	$(window).on("hashchange", function() {
 		onHashChange();
 	});
-    //
-	// $('.subscribe-items a').attr('data-aos', 'fade-up');
-	// // $('.icons a').attr('data-aos', 'fade-up');
-	// $('h2.underline').attr('data-aos', 'fade-up');
-	// // $('.btn.btn-primary').attr('data-aos', 'zoom-in');
-	// $('.library-item').attr('data-aos', 'fade-up');
+
 	$('h1.display-1').attr('data-aos', 'fade-right');
 	$('.home img, svg, iframe, video').attr('data-aos', 'fade-zoom-in');
 	$('.network, .subscribe, .num_item, .objective_item').attr('data-aos', 'fade-zoom-in');
     $('.green-header, .blue-header, .blue-text').attr('data-aos', 'fade-up');
     $('.eu-funded-community .col-md-6').attr('data-aos', 'fade-right');
-    // $('.timeline-content').attr('data-aos', 'fade-up');
-    /* News highlights carousel **/
-    $('.news-carousel').slick({
-        autoplay: false,
-        // autoplaySpeed: 2000,
-        draggable: true,
-        // pauseOnHover: true,
-        centerMode: false,
-        variableWidth: true,
-        infinite: true,
-        slidesToShow: 3,
-        speed: 1000,
-        centerPadding: '4%',
-        slidesToScroll: 1,
-        // centerPadding: '40px',
-        arrows: true,
-        dots: false,
-        responsive: [
-            {
-                breakpoint: 768,
-                settings: {
-                    arrows: false,
-                    dots: true,
-                    centerMode: true,
-                    centerPadding: '2%',
-                    slidesToShow: 1
-                }
-            }
-        ]
-    });
 
 
 
@@ -429,43 +396,6 @@ $(document).ready(function() {
             $(e.target).addClass("expand");
         }
     });
-
-    // var hedingsArray = [
-    //     'BioAgora',
-    //     'Partners',
-    //     'Team',
-    //     'Science Service',
-    //     'Cases',
-    //     'EU Biodiversity Platform',
-    //     'Biodiversity Knowledge Agora',
-    //     'The Financial Support',
-    //     'News',
-    //     'Networks',
-    //     'Events',
-    //     'Newsletters',
-    //     'Open',
-    //     'Publications',
-    //     'Deliverables',
-    //     'Links',
-    //     'Materials',
-    //     'Press',
-    //     'Contact',
-    //     'privacy',
-    //     'notice',
-    //     'FAQ',
-    //     'Financial Support',
-    //     'knowledge and expertise',
-    //     'policy requests',
-    //     'policy dialogues',
-    //     'Knowledge Exchange Network',
-    // ];
-    //
-    // $.each(hedingsArray, function (index, value) {
-    //     $("h1.underline:contains(" + value + ")").html(function (_, html) {
-    //         var regex = new RegExp(value, 'g');
-    //         return html.replace(regex, '<b>' + value + '</b>');
-    //     });
-    // });
 
     if (width >= 1024) {
         $('.work_packages .key_0, .work_packages .key_1, .work_packages .key_2, .work_packages .key_3').wrapAll('<div class="col-md-6 col-xs-12" />');

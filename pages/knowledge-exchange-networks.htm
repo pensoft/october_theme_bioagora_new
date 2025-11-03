@@ -260,7 +260,7 @@ return Redirect::to('/knowledge-exchange-networks');
                                aria-describedby="news-{{highlight.slug}}-desc">
                                 {% if highlight.cover %}
                                 <img class="news-img-top"
-                                     src="{{highlight.cover.getThumb(354, 311, {'mode': 'crop'})}}"
+                                     src="{{highlight.cover.getThumb(auto, 311, {'mode': 'crop'})}}"
                                      alt="Cover image for {{ highlight.title }}"
                                      loading="lazy">
                                 {% else %}
