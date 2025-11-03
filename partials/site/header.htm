@@ -93,7 +93,7 @@ description_limit = 0
 
 
 {% if this.theme.header_image and page_id != 'home' and page_id != 'search' and not is_detail_page %}
-<div class="header-image {{page_id}}">
+<div class="header-image {{page_id}}-header">
     {%if page_id != 'home' and page_id != 'search' and not ken_detail_page %}
         {%if this.page.header_image %}
         <div class="header-image-bar" style="background-image: url('{{this.page.header_image|media}}'); background-position: left center;">

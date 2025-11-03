@@ -106,6 +106,8 @@ function onStart()
 ==
 {% if is_detail_page %}
 
+
+
 <article class="single-news-item" role="main" aria-labelledby="article-title">
     <header class="container-fluid news-header" role="banner">
         <div class="img-container">
@@ -137,6 +139,8 @@ function onStart()
     </header>
 
     <main id="main-content" class="container" role="main">
+        <div class="go-back-link"><a href="/news">Return to the news list</a></div>
+
         <section class="body-content" aria-labelledby="article-content-heading">
             <h2 id="article-content-heading" class="sr-only">Article Content</h2>
             {% if article.content %}
@@ -194,7 +198,7 @@ function onStart()
 
 
     <header class="news-page-header">
-        <h1 id="news-page-title" class="text-center mt-4 mb-4">
+        <h1 id="news-page-title" class="text-center mb-4">
             Keep up to date with the latest news from the BioAgora project!
         </h1>
     </header>

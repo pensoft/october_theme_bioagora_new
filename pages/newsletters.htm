@@ -57,7 +57,7 @@ function onStart(){
                 <div class="row news_column">
                     {% if newsletter.cover %}
                     <a class="news-image col-xs-12 center-xs" href="{{'news'|page}}/{{newsletter.slug}}">
-                        <img class="news-img-top" src="{{newsletter.cover.getThumb(370, 212, {'mode': 'crop'})}}"
+                        <img class="news-img-top" src="{{newsletter.cover.getThumb(auto, 311, {'mode': 'crop'})}}"
                              alt="Cover image for {{ newsletter.title }}"
                              loading="lazy">
                     </a>

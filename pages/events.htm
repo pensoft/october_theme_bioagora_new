@@ -101,11 +101,9 @@ $this['page_url'] = $this->pageUrl('');
     <header class="container">
         <h1 id="events-page-title" class="sr-only">Events and News</h1>
 
-        <div class="container">
             <div class="category-tabs">
                 {% component 'tabs_menu' %}
             </div>
-        </div>
 
         <!-- Primary Navigation Tabs -->
         <nav id="events-navigation" class="tabs" role="navigation" aria-labelledby="primary-tabs-heading">
@@ -374,6 +372,7 @@ $this['page_url'] = $this->pageUrl('');
 {% else %}
 
 <main id="main-content" class="container" style="max-width: 950px;" role="main" aria-labelledby="event-title">
+    <div class="go-back-link"><a href="/events">Return to the events list</a></div>
     <article class="row single-news-item" role="article">
         <header class="col-md col-xs-12">
             <div class="news-title">
