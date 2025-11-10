@@ -227,8 +227,9 @@ if(get('download')){
                                                                              role="listitem"
                                                                              aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}">
 
-                                                                        <!-- Team Member Avatar -->
-                                                                        <div class="col-md-2 col-xs-12 member-avatar-section">
+                                                                        <!-- Team Member Details -->
+                                                                        <div class="col-md-10 col-xs-12 member-info-section">
+                                                                            <!-- Team Member Avatar -->
                                                                             <figure class="avatar-container">
                                                                                 {% if profile.avatar %}
                                                                                 <img class="img-fluid member-avatar"
@@ -244,48 +245,34 @@ if(get('download')){
                                                                                      aria-describedby="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc">
                                                                                 {% endif %}
                                                                                 <figcaption id="avatar-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
-                                                                                    Profile image for {{ profile.names }} from {{ partner.instituion }}
+                                                                                    Profile image for {{ profile.names }} from {{ profile.partner.instituion }}
                                                                                 </figcaption>
                                                                             </figure>
-                                                                        </div>
 
-                                                                        <!-- Team Member Details -->
-                                                                        <div class="col-md-10 col-xs-12 member-info-section">
                                                                             <div class="member-details">
                                                                                 <header class="member-header">
                                                                                     <h4 id="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
                                                                                         class="member-name">
                                                                                         {{ profile.names }}
                                                                                     </h4>
-
+                                                                                    <div class="partner_institution">
+                                                                                        {{ profile.partner.instituion }}
+                                                                                    </div>
                                                                                     <!-- Member context -->
                                                                                     <div class="sr-only member-context">
-                                                                                        Team member from {{ partner.instituion }}, {{ partner.country[0].name }}
+                                                                                        Team member from {{ profile.partner.instituion }}, {{ profile.partner.country[0].name }}
                                                                                     </div>
                                                                                 </header>
-
-                                                                                <!-- Hidden Biography Content -->
-                                                                                <div class="body member-biography"
-                                                                                     id="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
-                                                                                     role="region"
-                                                                                     aria-labelledby="member-name-{{ loop.parent.loop.index }}-{{ loop.index }}"
-                                                                                     aria-hidden="true"
-                                                                                     style="display: none;">
-                                                                                    <div class="sr-only">Biography for {{ profile.names }}:</div>
-                                                                                    {{ profile.content | raw }}
-                                                                                </div>
-
-                                                                                <!-- Biography Toggle Button -->
-                                                                                <p class="read-more-bio biography-toggle"
-                                                                                   aria-expanded="false"
-                                                                                   aria-controls="biography-{{ loop.parent.loop.index }}-{{ loop.index }}"
-                                                                                   aria-describedby="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc"
-                                                                                   onclick="expandBiography(this);">Read biography</p>
-
-                                                                                <span id="bio-toggle-{{ loop.parent.loop.index }}-{{ loop.index }}-desc" class="sr-only">
-                                        Click to read the full biography of {{ profile.names }}
-                                    </span>
                                                                             </div>
+                                                                        </div>
+                                                                        <!-- Team Member Avatar -->
+                                                                        <div class="col-md-2 col-xs-12 end-md center-xs">
+                                                                            <figure class="partner-logo-container">
+                                                                                <img class="partner-logo"
+                                                                                     src="{{ profile.partner.cover|crop_image }}"
+                                                                                     alt="Logo for {{ profile.partner.instituion }} partner"
+                                                                                     role="img">
+                                                                            </figure>
                                                                         </div>
                                                                     </article>
                                                                     {% endfor %}
