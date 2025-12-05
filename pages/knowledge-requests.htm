@@ -92,7 +92,28 @@ if(get('download')){
                         <article class="col-md-6 col-xs-12 case" role="listitem">
                             <div class="ken_item">
                                 <header class="info_container">
-                                        <div class="title_container">
+                                    <div class="label-container">
+                                        <!-- label -->
+                                        <section class="label" aria-labelledby="label-heading-{{record.id}}">
+                                            {% if record.label %}
+                                            {{ record.label }}
+                                            {% else %}
+                                            REQUEST
+                                            {% endif %}
+                                        </section>
+
+
+                                        <!-- status -->
+                                        {% if record.status %}
+                                        <!-- status -->
+                                        <section class="label" aria-labelledby="status-heading-{{record.id}}">
+                                            {{ record.status }}
+                                        </section>
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div class="title_container">
                                             <h3>
                                                 {{record.title}}
                                             </h3>
@@ -126,6 +147,16 @@ if(get('download')){
                                                                 REQUEST
                                                             {% endif %}
                                                         </section>
+
+
+                                                        <!-- status -->
+                                                        {% if record.status %}
+                                                        <!-- status -->
+                                                        <section class="label" aria-labelledby="status-heading-{{record.id}}">
+                                                            {{ record.status }}
+                                                        </section>
+                                                        {% endif %}
+
 
                                                         <!-- title -->
                                                         <section aria-labelledby="title-heading-{{record.id}}">
@@ -277,6 +308,22 @@ if(get('download')){
                                                                     </article>
                                                                     {% endfor %}
                                                                 </div>
+                                                            </div>
+                                                        </section>
+                                                        {% endif %}
+
+
+                                                        <!-- Affiliated experts-->
+
+                                                        {% if record.experts %}
+                                                        <section aria-labelledby="expert-name" class="services_accordion_item">
+                                                            <header aria-controls="expert-content-1" aria-expanded="false" class="row middle-xs accordion-toggle service-toggle"  data-toggle="collapse" tabindex="0">
+                                                                <div class="col-xs start-xs">
+                                                                    <div class="expert-name">Affiliated experts</div></div>
+                                                                <div aria-hidden="true" class="col-xs-2 end-xs plusminus expand-indicator"><span class="plus">&nbsp;</span></div>
+                                                            </header>
+                                                            <div aria-hidden="true" class="accordion-content" style="display: none;">
+                                                                {{record.experts|raw}}
                                                             </div>
                                                         </section>
                                                         {% endif %}
