@@ -11,6 +11,12 @@ jumbotron = "footer"
 background = "transperant"
 templates = "template3"
 description_limit = 0
+
+[jumbotron funding]
+jumbotron = "funding-text"
+background = "transperant"
+templates = "template3"
+description_limit = 0
 ==
 <footer class="container-fluid border-box dark-background" role="contentinfo" aria-label="Site footer">
     <div class="container">
@@ -68,8 +74,8 @@ description_limit = 0
                     </div>
                     {% endif %}
             </div>
-            <div class="col-md-10 col-xs-12">
-                <p id="funding-text" class="funding-text">{{ footer_funds_text }}</p>
+            <div class="col-md-10 col-xs-12 funding-text" id="funding-text" >
+            {% component 'funding' %}
             </div>
         </section>
     </div>

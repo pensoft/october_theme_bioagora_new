@@ -92,7 +92,7 @@ description_limit = 0
 
 
 
-{% if this.theme.header_image and page_id != 'home' and page_id != 'search' and not is_detail_page %}
+{% if this.theme.header_image and page_id != 'home' and page_id != 'search' %}
 <div class="header-image {{page_id}}-header">
     {%if page_id != 'home' and page_id != 'search' and not ken_detail_page %}
         {%if this.page.header_image %}

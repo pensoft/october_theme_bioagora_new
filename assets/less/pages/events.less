@@ -127,6 +127,10 @@
 
 .events .tabs{
 
+    .tabs-list{
+        padding-left: 9px!important;
+    }
+
         a{
             color: @link-color;
             padding: 8px 20px;
@@ -271,9 +275,164 @@
             color: @dark-color;
             margin: 0px 0 0px 0px;
         }
-    }
-    h1{
-        //margin-top: 50px;
+
+
+        /* =============================================
+       Event Sidebar
+       ============================================= */
+
+        .event-sidebar {
+
+            position: sticky;
+            top: 100px;
+
+            .breakpoint-large-down({
+                position: relative;
+                top: 0;
+                margin-top: 30px;
+            });
+
+            .event_info{
+                background: @secondary-color;
+                border-radius: 10px;
+                padding: 19px 22px;
+                margin-bottom: 10px;
+            }
+
+            .event_share{
+                background: @secondary-color;
+                border-radius: 10px;
+                padding: 17px 22px;
+            }
+
+            /* Date & Location rows */
+            .event-sidebar__item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .event-sidebar__icon {
+                flex-shrink: 0;
+                display: flex;
+                width: 36px;
+                height: 36px;
+                justify-content: center;
+                align-items: center;
+                border-radius: 10px;
+                background: linear-gradient(210deg, #00BDA7 24.17%, #001D8D 180.32%);
+                margin-right: 12px;
+            }
+
+            .event-sidebar__text {
+                color: @heading-text-color;
+                font-size: 15px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                letter-spacing: -0.3px;
+            }
+
+            /* Website link */
+            .event-sidebar__link {
+                padding: 15px 0 0 0;
+                margin-top: 15px;
+                border-top: 1px solid rgba(0, 29, 141, 0.15);
+
+                a {
+                    display: inline-flex;
+                    align-items: center;
+                    color: #00BDA7;
+                    font-size: 16px;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: opacity 0.2s ease;
+
+                    svg {
+                        margin-left: 6px;
+                        transition: transform 0.2s ease;
+                    }
+
+                    &:hover {
+                        opacity: 0.75;
+                        border-bottom: none;
+
+                        svg {
+                            transform: translateX(3px);
+                        }
+                    }
+                }
+            }
+
+            /* Share section */
+            .event-sidebar__share {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                flex-direction: row;
+                gap: 10px;
+
+                .breakpoint-large-down({
+                    align-items: center;
+                    justify-content: center;
+                });
+
+
+                a {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 32px;
+                    height: 32px;
+                    //margin-right: 10px;
+                    background-size: 18px;
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    transition: background-color 0.3s ease;
+                    border-radius: 10px;
+                    border: 1.413px solid rgba(0, 189, 167, 0.25);
+                    //opacity: 0.25;
+                    color: @link-color;
+                    font-size: 1em;
+                    line-height: 1em;
+
+                    &.p-bluesky{
+                        font-size: 0.7em;
+                        line-height: 32px;
+                    }
+
+                    &:hover {
+                        //background-color: @link-color;
+                        border: 1.413px solid @link-color;
+                        //opacity: 1!important;
+                    }
+                }
+
+            }
+
+            .event-sidebar__share-title {
+                color: @heading-text-color;
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 1;
+                margin: 0;
+            }
+
+            .event-sidebar__share-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                li {
+                    display: flex;
+                }
+            }
+        }
+
     }
 
 
@@ -284,14 +443,6 @@
         letter-spacing: 0px;
         margin-bottom: 20px;
         margin-top: 20px;
-
-        //font-size: 30px;
-        //color: @white-color;
-        //font-weight: bold;
-        //text-align: left!important;
-        //.breakpoint-large-down({
-        //    text-align: center!important;
-        //});
     }
 }
 
@@ -337,13 +488,13 @@
             justify-content: center;
             display: flex;
             flex-direction: column;
-            min-height: 68px;
+            min-height: 84px;
             //font-weight: normal;
             text-transform: uppercase;
             border-radius: 10px;
             text-align: center;
-            max-width: 150px!important;
-            padding: 12px 24px;
+            max-width: 145px!important;
+            padding: 12px  0;
 
 
 
@@ -361,10 +512,6 @@
                 margin-bottom: 20px;
                 max-width: unset!important;
             });
-        }
-
-        &:last-of-type{
-            border-bottom: none;
         }
 
         span{

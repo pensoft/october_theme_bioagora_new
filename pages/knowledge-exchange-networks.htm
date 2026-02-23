@@ -126,28 +126,56 @@ return Redirect::to('/knowledge-exchange-networks');
                 {% endif %}
             </div>
         </div>
+
+
+
+        {% if ken.about2 %}
+        <div class="row middle-xs objectives_network">
+            <div class="col-md-5 col-xs-12 start-md center-xs">
+                <figure class="about-image-container">
+                    <img src="{{ken.about_image2.getThumb(513, 433, {'mode': 'crop'})}}"
+                         alt="Additional image for {{ ken_title }} Knowledge Exchange Network"
+                         role="img"
+                         aria-describedby="about-image2-desc">
+                    <figcaption id="about-image2-desc" class="sr-only">
+                        Additional visual content for {{ ken_title }} KEN
+                    </figcaption>
+                </figure>
+            </div>
+            <div class="col-md-7 start-md center-xs col-xs-12">
+                <div class="about-content-secondary" role="document">
+                    <header>
+                        <h1 id="ken-page-Objectives-title" class="display-1">Objectives of the Network</h1>
+                    </header>
+                    {{ ken.about2|raw }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+
         <!-- Knowledge Requests Table -->
 
         {% if ken.knowege_requests %}
         <section class="container knowledge_requests_table mt-4" aria-labelledby="knowledge-requests-heading">
             <h2 id="knowledge-requests-heading" class="display-1">Knowledge Requests</h2>
             <div class="row" role="region" aria-labelledby="knowledge-requests-heading">
-                <div class="col-md-1" id="type-header">Type</div>
-                <div class="col-md-4" id="title-header">Title</div>
-                <div class="col-md-2" id="coordinator-header">Coordinator</div>
+                <div class="col-md-2" id="type-header">Type</div>
+                <div class="col-md-3" id="title-header">Title</div>
+                <div class="col-md-3" id="coordinator-header">Coordinator</div>
                 <div class="col-md-3" id="submission-header">Estimated submission</div>
-                <div class="col-md-2" id="status-header">Status</div>
+                <div class="col-md-1" id="status-header">Status</div>
             </div>
             {% for item in ken.knowege_requests %}
             <div class="row">
-                <div class="col-md-1 type"><span class="{{item.type|slug}} status-badge"
+                <div class="col-md-2 type"><span class="{{item.type|slug}} status-badge"
                                                  aria-label="Request type: {{item.type}}">
                                 {{item.type}}
                             </span></div>
-                <div class="col-md-4 ken_title"><span aria-label="Request title">{{item.title}}</span></div>
-                <div class="col-md-2 coordinator"><span aria-label="Coordinator">{{item.coordinator}}</span></div>
+                <div class="col-md-3 ken_title"><span aria-label="Request title">{{item.title}}</span></div>
+                <div class="col-md-3 coordinator"><span aria-label="Coordinator">{{item.coordinator}}</span></div>
                 <div class="col-md-3 estimate"><time aria-label="Estimated submission date">{{item.estimate}}</time></div>
-                <div class="col-md-2 status"><span class="{{item.status|slug}} status-badge"
+                <div class="col-md-1 status"><span class="{{item.status|slug}} status-badge"
                                                    aria-label="Request status: {{item.status}}">
                                 {{item.status}}
                             </span></div>
@@ -158,51 +186,91 @@ return Redirect::to('/knowledge-exchange-networks');
         {% endif %}
 
 
+
+        <!-- Framework -->
+        {% if ken.ken_section_title %}
+        <section class="container800 framework_section mt-4" aria-labelledby="framework-heading">
+            <h2 id="framework-heading" class="display-1">{{ken.ken_section_title}}</h2>
+            {{ken.ken_section_description|raw}}
+
+            <!-- Framework Carousel -->
+            {% if ken.framework_images.count > 0 %}
+            <div class="framework-carousel-wrapper">
+                <div class="framework-carousel" aria-label="Framework images carousel">
+                    {% for image in ken.framework_images %}
+                    <div class="framework-carousel__slide">
+                        <div class="framework-carousel__image-container">
+                            <img src="{{ image.path }}"
+                                 alt="{{ image.title ?: 'Framework image ' ~ loop.index }}"
+                                 loading="lazy" />
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+
         <!-- Activities and Events Section -->
         {% if ken.event.count > 0 %}
-        <section class="events_list_container mt-4" aria-labelledby="events-heading">
-            <h2 id="events-heading" class="display-1">Activities and Events</h2>
+        <p class="mt-4">&nbsp;</p>
+        <h2 id="events-heading" class="display-1">Activities and Events</h2>
+        <section class="row newslist-records news" aria-labelledby="events-heading">
 
-            <div class="events-list" role="list" aria-label="List of {{ ken_title }} KEN events">
+
                 {% for entry in ken.event %}
                 {% set url = entry.url ? entry.url : '/events/' ~ entry.slug %}
-                <article class="row entry_item middle-xs" role="listitem">
-                    <div class="col-md-2 col-xs-12 date_container">
-                        <time datetime="{{entry.start|date('c')}}" aria-label="Event date">
-                            <span class="date_day" aria-label="Date">{{entry.start|date("j M")}}</span>
-                            <span class="date_year" aria-label="Year">{{entry.start|date("Y")}}</span>
-                        </time>
-                    </div>
-                    <div class="col-md-8 col-xs-12">
-                        {% if entry.cover_image %}
-                        <a href="/events/{{entry.slug}}"
-                           aria-describedby="event-{{entry.slug}}-desc">
-                            <img src="{{entry.cover_image|crop_image|resize(174, auto, {'mode': 'crop'})}}"
-                                 alt="Cover image for {{ entry.title }}"
-                                 role="img"
-                                 loading="lazy">
-                        </a>
-                        {% endif %}
-                        <h3 class="event-title">
-                            <a href="/events/{{entry.slug}}"
-                               id="event-{{entry.slug}}-desc">
-                                {{entry.title|raw}}
+
+                <article class="col-xs-12 col-md-4 news-item item-{{entry.slug}}" role="listitem">
+                    <div class="row news_column">
+                        <div class="news-image col-xs-12 center-xs">
+                            <a href="{{'news'|page}}/{{entry.slug}}"
+                               aria-describedby="news-{{entry.slug}}-desc">
+                                {% if entry.cover_image %}
+                                <img class="news-img-top"
+                                     src="{{entry.cover_image.getThumb(auto, 311, {'mode': 'crop'})}}"
+                                     alt="Cover image for {{ entry.title }}"
+                                     loading="lazy">
+                                {% else %}
+                                <img class="news-img-top"
+                                     src="{{'No_Image_Available.jpg'|media }}"
+                                     alt="No image available for {{ entry.title }}"
+                                     loading="lazy">
+                                {% endif %}
                             </a>
-                        </h3>
-                    </div>
-                    <div class="col-md-2 col-xs-12 end-md center-xs">
-                        <a href="/events/{{entry.slug}}"
-                           class="btn btn-primary"
-                           aria-describedby="event-learn-more-{{entry.slug}}">
-                            Learn more
-                        </a>
-                        <span id="event-learn-more-{{entry.slug}}" class="sr-only">
-                        Learn more about {{ entry.title }}
-                    </span>
+                        </div>
+                        <div class="news-container col-xs-12">
+                            <time class="text-published"
+                                  datetime="{{ entry.published_at|date('c') }}"
+                                  aria-label="Published on">
+                                {{ entry.published_at|date("d M Y") }}
+                            </time>
+                            <div class="news-title">
+                                <h3 class="card-title">
+                                    <a href="{{'news'|page}}/{{entry.slug}}"
+                                       id="news-{{entry.slug}}-desc">
+                                        {{ entry.title|length > 99 ? entry.title|slice(0, 99) ~ '...' : entry.title }}
+                                    </a>
+                                </h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <a href="{{'news'|page}}/{{entry.slug}}"
+                                       class="btn btn-primary"
+                                       aria-describedby="read-article-{{entry.slug}}-desc">
+                                        {{'Read article'|_}}
+                                    </a>
+                                    <span id="read-article-{{entry.slug}}-desc" class="sr-only">
+                                    Read full article: {{ entry.title }}
+                                </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </article>
                 {% endfor %}
-            </div>
         </section>
         {% endif %}
 
@@ -245,6 +313,34 @@ return Redirect::to('/knowledge-exchange-networks');
             </div>
         </section>
         {% endif %}
+
+
+
+
+        <!-- Social media campaign -->
+        {% if ken.ken_social_section_title %}
+        <section class="container social_media_campaign_section mt-4" aria-labelledby="Social_media_campaign-heading">
+
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <h2 id="Social_media_campaign-heading" class="display-1">{{ken.ken_social_section_title}}</h2>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    {% if ken.socian_media_images.count > 0 %}
+                        {% for image in ken.socian_media_images %}
+                            <img src="{{ image.path }}"
+                                 alt="{{ image.title ?: 'Social media campaign image ' ~ loop.index }}"
+                                 loading="lazy" />
+                        {% endfor %}
+                    {% endif %}
+                    {{ken.ken_social_section_description|raw}}
+                </div>
+            </div>
+
+
+        </section>
+        {% endif %}
+
 
         <!-- News Section -->
         {% if ken_news.count > 0 %}

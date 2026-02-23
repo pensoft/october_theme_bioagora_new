@@ -310,7 +310,11 @@ ul.pagination{
     .container-fluid {
         &.dark-background {
 
-            background: @footer-bkg-color;
+            //background: @footer-bkg-color;
+            background: rgba(0, 20, 97, 0.50) url("../../assets/images/footer_bg.png") top left no-repeat;
+            background-size: cover;
+            backdrop-filter: blur(40px);
+
             .footer-menu {
                 list-style-type: none;
                 padding: 0;
@@ -416,11 +420,25 @@ ul.pagination{
         font-weight: 400;
         line-height: normal;
         letter-spacing: -0.28px;
-        margin-left: 50px;
+        //margin-left: 50px;
         .breakpoint-large-down({
             margin-bottom: 0px;
             margin-left: 0;
         });
+
+        .banner{
+            margin-left: 50px;
+            .breakpoint-large-down({
+                margin-left: 0;
+            });
+        }
+        .container{
+            padding: 0;
+        }
+
+        p{
+            margin-bottom: 0;
+        }
     }
 
     .footer-funding{
@@ -505,13 +523,6 @@ ul.pagination{
         height: auto;
 
     });
-    //
-    //.footer-right-border{
-    //    border-right: 1px solid #4D4D4D;
-    //    .breakpoint-large-down({
-    //        border-right: none;
-    //    });
-    //}
 
     .footer-disclaimer-container{
         display: flex;
@@ -520,38 +531,18 @@ ul.pagination{
     }
 
     .links{
-        //display: flex;
-        //flex-direction: column;
-        //justify-content: start;
-        //text-align: left;
-        //align-items: flex-start;
-        //font-size: 18px;
-        //font-weight: bold;
-
-
-        //.breakpoint-large-down({
-        //    text-align: center;
-        //    display: block;
-        //    align-items: center;
-        //    margin: 40px auto;
-        //});
 
         .nav{
             list-style-type: none;
             padding: 0;
             margin: 0 0 20px 0;
-            //.breakpoint-large-down({
-            //    text-align: center;
-            //    margin: 15px auto;
-            //});
-            //a{
-            //    font-size: 16px;
-            //    color: white;
-            //    font-weight: 200;
-            //    &:hover{
-            //        text-decoration: underline;
-            //    }
-            //}
+
+            .item{
+                margin-bottom: 22px;
+                &:last-of-type{
+                    margin-bottom: 0;
+                }
+            }
         }
     }
 }
@@ -1749,22 +1740,29 @@ now override the 3.3 new styles for modern browsers & apply opacity
     display: flex;
     margin-left: 10px;
     margin-bottom: 50px;
+    position: relative;
     a::before {
         position: relative;
-        /* top: 3pt; Uncomment this to lower the icons as requested in comments*/
         content: "";
         display: inline-block;
-        /* By using an em scale, the arrows will size with the font */
-        width: 0.4em;
-        height: 0.4em;
-        border-left: 0.15em solid @link-color;
-        border-top: 0.15em solid @link-color;
-        transform: rotate(-45deg);
+        width: 16px;
+        height: 16px;
         margin-right: 0.3em;
+        background: url("../../assets/images/return_arrow.svg") center no-repeat;
+        background-size: 12px;
+        top: 2px;
     }
 }
 
 
 .userway_buttons_wrapper{
     top: 126px!important;
+}
+
+
+
+.ml-form-embedBody {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }

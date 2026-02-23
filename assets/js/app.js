@@ -293,6 +293,33 @@ $(document).ready(function() {
         ]
     });
 
+
+
+    $('.framework-carousel').slick({
+        infinite: true,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        centerMode: true,
+        centerPadding: '80px',
+        speed: 500,
+        arrows: true,
+        dots: false,
+        prevArrow: '<button type="button" class="framework-carousel__arrow framework-carousel__arrow--prev" aria-label="Previous image"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">\n' +
+            '  <path d="M24.3069 12.4784L0.650085 12.4785M0.650085 12.4785L12.4785 0.650025M0.650085 12.4785L12.4785 24.3069" stroke="#00BDA7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>\n' +
+            '</svg></button>',
+        nextArrow: '<button type="button" class="framework-carousel__arrow framework-carousel__arrow--next" aria-label="Next image"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">\n' +
+            '  <path d="M0.650272 12.4785L24.3069 12.4783M24.3069 12.4783L12.4785 24.3068M24.3069 12.4783L12.4786 0.65" stroke="#00BDA7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>\n' +
+            '</svg></button>',
+        responsive: [
+            {
+                breakpoint: 768,
+                settings: {
+                    centerPadding: '20px'
+                }
+            }
+        ]
+    });
+
     $('.news-container').click(function() {
         var link = $(this).find('a').attr('href');
         if(link) {
